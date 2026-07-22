@@ -1,1 +1,0 @@
-# Patent_Platform
