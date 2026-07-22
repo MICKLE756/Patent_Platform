@@ -1,0 +1,75 @@
+server:
+  host: "0.0.0.0"
+  port: 8100
+
+embedding:
+  provider: "remote"
+  # AutoDL 服务器
+  endpoint: "https://u791209-yxk3-4e8d829e.westd.seetacloud.com:8443/embed"
+  health_endpoint: "https://u791209-yxk3-4e8d829e.westd.seetacloud.com:8443/health"
+  model: "Qwen3-Embedding-8B"
+  # Qwen3-Embedding-8B 默认输出 4096 维；Milvus collection 必须使用相同维度。
+  dimension: 4096
+  timeout: 60
+  token: "2026zxcvbnm."
+  token_env: "EMBEDDING_API_TOKEN"
+  is_query: true
+  normalize: true
+
+milvus:
+  provider: "remote"
+  host: "localhost"
+  port: 19530
+  collection: "patent_chunks_v2"
+  top_k: 100
+
+mysql:
+  enabled: true
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "root123456"
+  password_env: "MYSQL_PASSWORD"
+  database: "retrieval_service"
+  charset: "utf8mb4"
+  patent_detail_table: "patent_details"
+
+rerank:
+  provider: "remote"
+  # 和 embedding 使用同一台 AutoDL 服务器
+  endpoint: "https://uu791209-yxk3-4e8d829e.westd.seetacloud.com:8443/v1/rerank"
+  health_endpoint: "https://uu791209-yxk3-4e8d829e.westd.seetacloud.com:8443/health"
+  model: "Qwen3-Reranker-4B"
+  timeout: 60
+  token: ""
+  token_env: "RERANK_API_TOKEN"
+  candidate_top_k: 100
+  max_document_chars: 1500
+  request_format: "strings"
+
+ranking:
+  use_rerank: true
+  weights:
+    semantic: 0.55
+    rerank: 0.35
+    freshness: 0.0
+    metadata: 0.1
+
+llm:
+  provider: "remote"
+  query_normalization_enabled: false
+  endpoint: "http://127.0.0.1:11434/v1/chat/completions"
+  model: "qwen2:7b"
+  timeout: 30
+
+search:
+  default_top_k: 10
+  max_top_k: 20
+  recall_top_k: 100
+
+filter:
+  tech_field_rule_weight: 0.4
+  tech_field_embedding_weight: 0.6
+
+index:
+  version: "v0.0.1"

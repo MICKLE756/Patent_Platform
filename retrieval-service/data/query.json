@@ -1,0 +1,240 @@
+[
+  {
+    "query": "新能源汽车电池模块需要热失控防护结构，能够在异常升温时快速排气通风并降低安全风险",
+    "session_id": "sess_full_001",
+    "tech_field": "新能源汽车",
+    "core_problem": "电池模块热失控防护与排气通风",
+    "constraints": {
+      "application_scene": "新能源汽车电池模块",
+      "safety_requirement": "热失控防护",
+      "structure_requirement": "排气通风和安全隔离",
+      "expected_effect": "降低火焰或高温气体扩散风险"
+    },
+    "filters": {
+      "tech_field": "新能源汽车",
+      "maturity": "可转化",
+      "publish_year_from": 2024,
+      "application_scene": "电池模块"
+    },
+    "sort_preference": "latest",
+    "top_k": 20
+  },
+  {
+    "query": "汽车零部件加工后需要高精度检测装置，能够测量孔径、平整度、弧度等尺寸误差",
+    "session_id": "sess_full_002",
+    "tech_field": "智能制造装备",
+    "core_problem": "汽车零部件尺寸精度检测",
+    "constraints": {
+      "application_scene": "汽车零部件检测",
+      "measurement_targets": [
+        "孔径",
+        "平整度",
+        "弧度"
+      ],
+      "performance_requirement": "检测精度高、操作方便、适合产线使用",
+      "equipment_type": "检测检具或自动化测量装置"
+    },
+    "filters": {
+      "tech_field": "仪器仪表设备制造",
+      "maturity": "可转化",
+      "publish_year_from": 2024,
+      "application_scene": "汽车零部件"
+    },
+    "sort_preference": "relevance",
+    "top_k": 20
+  },
+  {
+    "query": "电子器件散热需要高导热复合材料或导热组合物，要求导热性能好并适合热管理场景",
+    "session_id": "sess_full_003",
+    "tech_field": "新材料",
+    "core_problem": "电子器件热管理与高导热材料",
+    "constraints": {
+      "application_scene": "电子器件散热",
+      "material_preference": "导热复合材料或导热组合物",
+      "performance_requirement": "高导热、稳定性好、适合规模化应用",
+      "target_industry": "电子器件热管理"
+    },
+    "filters": {
+      "tech_field": "先进材料",
+      "maturity": "可转化",
+      "publish_year_from": 2026,
+      "application_scene": "电子器件散热"
+    },
+    "sort_preference": "semantic",
+    "top_k": 20
+  },
+  {
+    "query": "需要耐高温400度以上、用于餐饮厨具的不粘锅涂层材料",
+    "session_id": "sess_001",
+    "tech_field": "新材料",
+    "core_problem": "耐高温环保不粘锅涂层",
+    "constraints": {
+      "temperature": ">=400℃",
+      "scene": "餐饮厨具"
+    },
+    "filters": {
+      "tech_field": "新材料",
+      "publish_year_from": 2022,
+      "application_scene": "厨具"
+    },
+    "sort_preference": "latest",
+    "top_k": 10
+  },
+  {
+    "query": "面向新能源汽车电池包的热失控监测与预警技术",
+    "session_id": "sess_002",
+    "tech_field": "新能源",
+    "core_problem": "电池热失控提前识别",
+    "constraints": {
+      "application": "新能源汽车",
+      "maturity": "可产业化"
+    },
+    "filters": {
+      "tech_field": "新能源",
+      "publish_year_from": 2021,
+      "application_scene": "电池包"
+    },
+    "sort_preference": "relevance",
+    "top_k": 8
+  },
+  {
+    "query": "农业温室环境下的智能灌溉控制方法",
+    "session_id": "sess_004",
+    "tech_field": "智慧农业",
+    "core_problem": "根据作物状态动态调节灌溉",
+    "constraints": {
+      "scene": "温室种植",
+      "cost": "中低成本"
+    },
+    "filters": {
+      "tech_field": "智慧农业",
+      "publish_year_from": 2019,
+      "application_scene": "灌溉"
+    },
+    "sort_preference": "relevance",
+    "top_k": 6
+  },
+  {
+    "query": "适用于医疗影像的肺结节自动检测算法",
+    "session_id": "sess_005",
+    "tech_field": "人工智能",
+    "core_problem": "肺结节识别准确率提升",
+    "constraints": {
+      "application": "医疗影像",
+      "maturity": "临床辅助"
+    },
+    "filters": {
+      "tech_field": "人工智能",
+      "publish_year_from": 2021,
+      "application_scene": "肺结节"
+    },
+    "sort_preference": "latest",
+    "top_k": 7
+  },
+  {
+    "query": "面向仓储物流的自主移动机器人路径规划技术",
+    "session_id": "sess_006",
+    "tech_field": "机器人",
+    "core_problem": "多机器人协同避障与路径优化",
+    "constraints": {
+      "scene": "仓储物流",
+      "maturity": "工程应用"
+    },
+    "filters": {
+      "tech_field": "机器人",
+      "publish_year_from": 2020,
+      "application_scene": "仓储"
+    },
+    "sort_preference": "relevance",
+    "top_k": 10
+  },
+  {
+    "query": "柔性可穿戴设备中的低功耗传感器封装方案",
+    "session_id": "sess_007",
+    "tech_field": "电子信息",
+    "core_problem": "柔性传感器长期稳定封装",
+    "constraints": {
+      "material": "柔性基底",
+      "cost": "可量产",
+      "application": "可穿戴设备"
+    },
+    "filters": {
+      "tech_field": "电子信息",
+      "publish_year_from": 2022,
+      "application_scene": "可穿戴"
+    },
+    "sort_preference": "latest",
+    "top_k": 9
+  },
+  {
+    "query": "建筑外墙保温材料的阻燃改性技术",
+    "session_id": "sess_008",
+    "tech_field": "建筑材料",
+    "core_problem": "提升保温材料阻燃性能",
+    "constraints": {
+      "temperature": "耐火高温",
+      "material": "聚合物保温材料",
+      "scene": "建筑外墙"
+    },
+    "filters": {
+      "tech_field": "建筑材料",
+      "publish_year_from": 2018,
+      "application_scene": "外墙保温"
+    },
+    "sort_preference": "relevance",
+    "top_k": 7
+  },
+  {
+    "query": "半导体制造中晶圆缺陷检测的机器视觉方法",
+    "session_id": "sess_009",
+    "tech_field": "半导体",
+    "core_problem": "微小缺陷自动识别",
+    "constraints": {
+      "application": "晶圆检测",
+      "maturity": "工业检测"
+    },
+    "filters": {
+      "tech_field": "半导体",
+      "publish_year_from": 2021,
+      "application_scene": "缺陷检测"
+    },
+    "sort_preference": "latest",
+    "top_k": 20
+  },
+  {
+    "query": "食品冷链运输过程中的温湿度异常监测系统",
+    "session_id": "sess_010",
+    "tech_field": "物联网",
+    "core_problem": "冷链环境实时监控与异常报警",
+    "constraints": {
+      "temperature": "低温环境",
+      "scene": "食品冷链",
+      "cost": "低功耗"
+    },
+    "filters": {
+      "tech_field": "物联网",
+      "publish_year_from": 2020,
+      "application_scene": "冷链"
+    },
+    "sort_preference": "relevance",
+    "top_k": 5
+  },
+  {
+    "query": "用于工业废水处理的低成本高效吸附材料",
+    "session_id": "sess_003",
+    "tech_field": "环保技术",
+    "core_problem": "重金属离子吸附去除",
+    "constraints": {
+      "cost": "低成本",
+      "material": "多孔材料",
+      "scene": "工业废水"
+    },
+    "filters": {
+      "tech_field": "环保技术",
+      "publish_year_from": 2020,
+      "application_scene": "废水处理"
+    },
+    "sort_preference": "latest",
+    "top_k": 10
+  }
+]

@@ -1,0 +1,91 @@
+<view class="container">
+  <view class="header">
+    <text class="title">科研团队用户管理</text>
+    <text class="total">共 {{total}} 条</text>
+  </view>
+
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view class="user-list" wx:else>
+    <view class="user-item" wx:for="{{userList}}" wx:key="id" bindtap="openDetailModal" data-user="{{item}}">
+      <view class="user-avatar">
+        <text wx:if="{{item.wechatAvatar}}">{{item.wechatNickname || item.username}}</text>
+        <text wx:else>{{(item.wechatNickname || item.username || '?').charAt(0)}}</text>
+      </view>
+      <view class="user-info">
+        <text class="user-name">{{item.teamName || item.wechatNickname || item.username}}</text>
+        <text class="user-meta">用户名: {{item.username}} | 状态: {{item.status === 1 ? '正常' : '禁用'}}</text>
+        <text class="user-meta" wx:if="{{item.institution}}">{{item.institution}}</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <view class="empty-box" wx:if="{{userList.length === 0}}">
+      <text class="empty-text">暂无科研团队用户数据</text>
+    </view>
+
+    <view class="pagination" wx:if="{{pages > 1}}">
+      <text class="page-btn {{pageNum <= 1 ? 'disabled' : ''}}" bindtap="onPrevPage">上一页</text>
+      <text class="page-info">{{pageNum}} / {{pages}}</text>
+      <text class="page-btn {{pageNum >= pages ? 'disabled' : ''}}" bindtap="onNextPage">下一页</text>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">科研团队详情</text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+
+      <view class="modal-body" wx:if="{{currentUser}}">
+        <view class="detail-item">
+          <text class="detail-label">用户名</text>
+          <text class="detail-value">{{currentUser.username}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">团队名称</text>
+          <text class="detail-value">{{currentUser.teamName || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">联系人</text>
+          <text class="detail-value">{{currentUser.contactName || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">联系电话</text>
+          <text class="detail-value">{{currentUser.contactPhone || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">联系邮箱</text>
+          <text class="detail-value">{{currentUser.contactEmail || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">机构</text>
+          <text class="detail-value">{{currentUser.institution || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">团队编号</text>
+          <text class="detail-value">{{currentUser.teamCode || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">研究领域</text>
+          <text class="detail-value">{{currentUser.researchDomain || '-'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">状态</text>
+          <text class="detail-value">{{currentUser.status === 1 ? '正常' : '禁用'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">注册时间</text>
+          <text class="detail-value">{{currentUser.createTime || '-'}}</text>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="btn-close" bindtap="closeModal">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>

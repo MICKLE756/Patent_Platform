@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.AI_Assistant.backend.patent.mapper.PatentMapper">
+
+    <!-- 处理 TEXT 类型字段的 ResultMap，使用 ClobTypeHandler -->
+    <resultMap id="PatentResultMap" type="com.AI_Assistant.backend.patent.entity.Patent">
+        <id property="patentId" column="patent_id"/>
+        <result property="title" column="title"/>
+        <result property="applicant" column="applicant"/>
+        <result property="currentOwner" column="current_owner"/>
+        <result property="inventors" column="inventors"/>
+        <result property="patentType" column="patent_type"/>
+        <result property="legalStatus" column="legal_status"/>
+        <result property="validity" column="validity"/>
+        <result property="applicationDate" column="application_date"/>
+        <result property="publicationDate" column="publication_date"/>
+        <result property="grantDate" column="grant_date"/>
+        <result property="estimatedExpiryDate" column="estimated_expiry_date"/>
+        <!-- abstract 字段使用 ClobTypeHandler 处理 TEXT 类型 -->
+        <result property="abstractText" column="abstract" jdbcType="LONGVARCHAR" typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+        <result property="technicalEffectSentences" column="technical_effect_sentences" jdbcType="LONGVARCHAR" typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+        <result property="techField" column="tech_field" jdbcType="LONGVARCHAR" typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+        <result property="technicalStability" column="technical_stability"/>
+        <result property="technicalAdvancement" column="technical_advancement"/>
+        <result property="sourceLink" column="source_link"/>
+    </resultMap>
+
+    <!-- 根据专利ID查询专利信息 -->
+    <select id="selectByPatentIdResultMap" resultMap="PatentResultMap">
+        SELECT * FROM patent WHERE patent_id = #{patentId}
+    </select>
+
+    <!-- 查询所有专利 -->
+    <select id="selectAllResultMap" resultMap="PatentResultMap">
+        SELECT * FROM patent
+    </select>
+
+    <!-- 根据专利ID列表批量查询 -->
+    <select id="selectBatchPatentsByIdsResultMap" resultMap="PatentResultMap">
+        SELECT * FROM patent WHERE patent_id IN
+        <foreach collection="patentIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

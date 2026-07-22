@@ -1,0 +1,449 @@
+.app-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20rpx;
+}
+
+/* 顶部名片区 */
+.profile-section {
+  margin-bottom: 30rpx;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.avatar-container {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.teacher-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+.teacher-college {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 能力展示区 */
+.skills-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.radar-chart-container {
+  background: white;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  height: 400rpx;
+}
+
+.radar-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* 选项卡区域 */
+.tabs-section {
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-button.active {
+  color: #007aff;
+  font-weight: bold;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  width: 60%;
+  height: 4rpx;
+  background-color: #007aff;
+  border-radius: 2rpx;
+}
+
+.tab-content {
+  padding: 20rpx;
+}
+
+/* 专利列表 */
+.patents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.patent-item {
+  padding: 24rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  border-left: 4rpx solid #007aff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.patent-item:hover {
+  background: #f0f0f0;
+}
+
+.patent-title {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 消息列表 */
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.message-item {
+  padding: 24rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  border-left: 4rpx solid #ff9500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+}
+
+.message-item:hover {
+  background: #f0f0f0;
+}
+
+.message-item.confirmed {
+  border-left-color: #4cd964;
+  background: #f0f9ff;
+}
+
+.message-item.rejected {
+  border-left-color: #ff3b30;
+  background: #fff0f0;
+}
+
+.message-sender {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.message-title {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.confirmed-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background: #4cd964;
+  color: white;
+  font-size: 18rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.rejected-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background: #ff3b30;
+  color: white;
+  font-size: 18rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 模态框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16rpx;
+  width: 80%;
+  max-width: 600rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.patent-modal {
+  max-height: 85vh;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+  cursor: pointer;
+  padding: 0 10rpx;
+}
+
+.modal-body {
+  padding: 24rpx;
+}
+
+/* 专利详情 */
+.comments-section {
+  margin-bottom: 20rpx;
+}
+
+.comments-title {
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-bottom: 16rpx;
+  color: #333;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.comment-item {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+}
+
+.comment-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.comment-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.comment-user {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.comment-time {
+  font-size: 18rpx;
+  color: #999;
+}
+
+.comment-content {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 消息详情 */
+.message-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.sender {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.message-content {
+  font-size: 24rpx;
+  color: #333;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* 模态框底部 */
+.modal-footer {
+  padding: 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.views-footer {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.label {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.value {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-modal-btn {
+  padding: 12rpx 32rpx;
+  background: #f0f0f0;
+  color: #333;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-left: auto;
+}
+
+.reject-btn {
+  padding: 12rpx 32rpx;
+  background: #f0f0f0;
+  color: #333;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  padding: 12rpx 32rpx;
+  background: #007aff;
+  color: white;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  cursor: pointer;
+}
+
+.confirmed-btn {
+  padding: 12rpx 32rpx;
+  background: #4cd964;
+  color: white;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  cursor: not-allowed;
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+.rejected-btn {
+  padding: 12rpx 32rpx;
+  background: #ff3b30;
+  color: white;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  cursor: not-allowed;
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .app-container {
+    padding: 16rpx;
+  }
+  
+  .profile-card {
+    padding: 32rpx;
+  }
+  
+  .radar-chart-container {
+    height: 350rpx;
+  }
+  
+  .modal-content {
+    width: 90%;
+  }
+}

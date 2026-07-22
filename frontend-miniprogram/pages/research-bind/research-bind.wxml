@@ -1,0 +1,77 @@
+<view class="container">
+  <view wx:if="{{mode === 'add'}}">
+    <view class="tip-box">
+      <text class="tip-text">请填写科研团队信息完成身份绑定，带 <text class="required">*</text> 为必填项</text>
+    </view>
+
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>团队名称</text>
+        <input class="form-input" placeholder="请输入团队名称" value="{{form.teamName}}" bindinput="onInput" data-field="teamName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>联系人姓名</text>
+        <input class="form-input" placeholder="请输入联系人姓名" value="{{form.contactName}}" bindinput="onInput" data-field="contactName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>所属单位</text>
+        <input class="form-input" placeholder="请输入所属单位" value="{{form.institution}}" bindinput="onInput" data-field="institution" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">研究方向/领域</text>
+        <input class="form-input" placeholder="请输入研究方向" value="{{form.researchDomain}}" bindinput="onInput" data-field="researchDomain" />
+      </view>
+    </view>
+
+    <button class="submit-btn" bindtap="onSubmit" disabled="{{loading || !form.teamName || !form.contactName || !form.institution}}">
+      {{loading ? '提交中...' : '提交绑定'}}
+    </button>
+  </view>
+
+  <view wx:if="{{mode === 'edit'}}">
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">团队名称</text>
+        <input class="form-input" placeholder="请输入团队名称" value="{{form.teamName}}" bindinput="onInput" data-field="teamName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">联系人姓名</text>
+        <input class="form-input" placeholder="请输入联系人姓名" value="{{form.contactName}}" bindinput="onInput" data-field="contactName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">所属单位</text>
+        <input class="form-input" placeholder="请输入所属单位" value="{{form.institution}}" bindinput="onInput" data-field="institution" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">研究方向/领域</text>
+        <input class="form-input" placeholder="请输入研究方向" value="{{form.researchDomain}}" bindinput="onInput" data-field="researchDomain" />
+      </view>
+    </view>
+
+    <button class="submit-btn" bindtap="onSubmit" disabled="{{loading}}">
+      {{loading ? '提交中...' : '保存修改'}}
+    </button>
+  </view>
+
+  <view wx:if="{{mode === 'view'}}">
+    <view class="info-card">
+      <view class="info-item">
+        <text class="info-label">团队名称</text>
+        <text class="info-value">{{form.teamName || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">联系人姓名</text>
+        <text class="info-value">{{form.contactName || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">所属单位</text>
+        <text class="info-value">{{form.institution || '-'}}</text>
+      </view>
+      <view class="info-item" style="border-bottom: none;">
+        <text class="info-label">研究方向</text>
+        <text class="info-value">{{form.researchDomain || '暂无'}}</text>
+      </view>
+    </view>
+  </view>
+
+</view>

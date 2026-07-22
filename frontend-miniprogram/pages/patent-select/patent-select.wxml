@@ -1,0 +1,30 @@
+<view class="container">
+  <view wx:if="{{patents.length > 0}}" class="action-bar">
+    <text class="selected-count">已选 {{selectedCount}} 项</text>
+    <button class="batch-btn" bindtap="onBindSelected" disabled="{{loading}}">批量绑定</button>
+  </view>
+
+  <view class="patent-list">
+    <view wx:if="{{patents.length === 0 && !loading}}" class="empty-box">
+      <text class="empty-text">暂无可绑定专利</text>
+    </view>
+    
+    <block wx:for="{{patents}}" wx:key="patentId">
+      <view class="patent-card {{item.selected ? 'selected' : ''}}" bindtap="toggleSelect" data-id="{{item.patentId}}">
+        <view class="check-box">
+          <view wx:if="{{item.selected}}" class="checked">✓</view>
+        </view>
+        <view class="patent-content">
+          <view class="patent-title">{{item.title || '-'}}</view>
+          <view class="patent-meta">
+            <text class="meta-item">发明人: {{item.inventors || '-'}}</text>
+            <text class="meta-item">所属单位: {{item.applicant || '-'}}</text>
+            <text class="meta-item" wx:if="{{item.displayTechField}}">领域: {{item.displayTechField}}</text>
+            <text class="meta-item" wx:if="{{item.patentType}}">类型: {{item.patentType}}</text>
+            <text class="meta-item" wx:if="{{item.applicationDate}}">申请日: {{item.applicationDate}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

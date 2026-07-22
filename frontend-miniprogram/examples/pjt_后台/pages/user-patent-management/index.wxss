@@ -1,0 +1,209 @@
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #333;
+}
+
+/* 表格滚动容器 */
+.table-scroll {
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: 32rpx;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #409eff #f0f2f5;
+}
+
+/* 自定义滚动条样式 */
+.table-scroll::-webkit-scrollbar {
+  height: 8rpx;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: #f0f2f5;
+  border-radius: 4rpx;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: #409eff;
+  border-radius: 4rpx;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #66b1ff;
+}
+
+/* 表格样式 */
+.table {
+  display: table;
+  min-width: 100%;
+  background-color: white;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.06);
+}
+
+.table-header {
+  display: table-row;
+  background-color: #f5f7fa;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  display: table-cell;
+  font-size: 24rpx;
+  padding: 20rpx 16rpx;
+  border-bottom: 2rpx solid #f0f2f5;
+  vertical-align: middle;
+}
+
+/* 各列宽度定义 */
+.id-cell {
+  width: 60rpx;
+  text-align: center;
+  color: #409eff;
+  font-weight: 600;
+}
+
+.username-cell {
+  width: 120rpx;
+  color: #303133;
+  text-align: center;
+}
+
+.email-cell {
+  width: 200rpx;
+  color: #606266;
+  text-align: center;
+}
+
+.title-cell {
+  width: 250rpx;
+  color: #303133;
+}
+
+.field-cell {
+  width: 120rpx;
+  color: #409eff;
+  text-align: center;
+}
+
+.status-cell {
+  width: 100rpx;
+  text-align: center;
+}
+
+.time-cell {
+  width: 180rpx;
+  color: #909399;
+  font-size: 22rpx;
+  text-align: center;
+}
+
+.action-cell {
+  width: 220rpx;
+  text-align: center;
+}
+
+/* 表头样式 */
+.table-header .table-cell {
+  font-weight: 600;
+  color: #606266;
+  border-bottom: 2rpx solid #e4e7ed;
+  background-color: #f5f7fa;
+}
+
+/* 操作按钮 */
+.audit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  justify-content: center;
+}
+
+.audit-actions .btn {
+  padding: 8rpx 16rpx;
+  font-size: 22rpx;
+  margin: 0;
+}
+
+/* 内容预览样式 */
+.content-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  color: #409eff;
+  font-weight: 500;
+}
+
+.content-preview:hover {
+  text-decoration: underline;
+}
+
+/* 完整内容样式 */
+.full-content {
+  background-color: #f5f7fa;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #303133;
+  min-height: 120rpx;
+  word-break: break-all;
+}
+
+/* 对话框样式 */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  width: 80%;
+  max-width: 600rpx;
+  box-shadow: 0 8rpx 24rpx 0 rgba(0, 0, 0, 0.15);
+}
+
+.dialog-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 24rpx;
+  color: #333;
+  text-align: center;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #e4e7ed;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32rpx;
+  gap: 16rpx;
+}

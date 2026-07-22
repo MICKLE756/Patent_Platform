@@ -1,0 +1,131 @@
+<view class="container">
+  <view class="header">
+    <text class="title">角色管理</text>
+    <button class="add-btn" bindtap="openCreateModal">创建角色</button>
+  </view>
+
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view class="role-list" wx:else>
+    <view class="role-item" wx:for="{{roleList}}" wx:key="id">
+      <view class="role-info" bindtap="openDetailModal" data-role="{{item}}">
+        <view class="role-header">
+          <text class="role-name">{{item.roleName}}</text>
+          <text class="role-code">{{item.roleCode}}</text>
+        </view>
+        <text class="role-desc">{{item.description || '暂无描述'}}</text>
+        <text class="role-meta">状态: {{item.status === 1 ? '启用' : '禁用'}} | 创建时间: {{item.createTime}}</text>
+      </view>
+      <view class="role-actions">
+        <text class="action-btn edit" bindtap="openEditModal" data-role="{{item}}">编辑</text>
+        <text class="action-btn delete" bindtap="deleteRole" data-role="{{item}}">删除</text>
+      </view>
+    </view>
+
+    <view class="empty-box" wx:if="{{roleList.length === 0}}">
+      <text class="empty-text">暂无角色数据</text>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content {{modalType === 'detail' ? 'large' : ''}}" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">
+          {{modalType === 'create' ? '创建角色' : modalType === 'edit' ? '编辑角色' : '角色详情'}}
+        </text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <block wx:if="{{modalType === 'create' || modalType === 'edit'}}">
+          <view class="form-item">
+            <text class="form-label">角色名称</text>
+            <input class="form-input" placeholder="请输入角色名称" value="{{formData.roleName}}" data-field="roleName" bindinput="onInputChange" />
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">角色代码</text>
+            <input class="form-input" placeholder="请输入角色代码" value="{{formData.roleCode}}" data-field="roleCode" bindinput="onInputChange" />
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">角色描述</text>
+            <textarea class="form-textarea" placeholder="请输入角色描述" value="{{formData.description}}" data-field="description" bindinput="onInputChange" />
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">权限配置</text>
+            <view class="permission-list">
+              <view class="permission-item" wx:for="{{permissionList}}" wx:key="key">
+                <view class="permission-info">
+                  <text class="permission-label">{{item.label}}</text>
+                  <text class="permission-level" wx:if="{{item.level}}">L{{item.level}}</text>
+                </view>
+                <view class="permission-control">
+                  <switch 
+                    wx:if="{{!disabledPermissions.includes(item.key)}}"
+                    checked="{{permissions[item.key] === 1}}" 
+                    bindchange="onPermissionChange" 
+                    data-key="{{item.key}}" 
+                  />
+                  <view wx:else class="permission-locked">
+                    <text class="locked-text">无权限</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <text class="permission-tip">注：您只能分配您自己拥有的权限</text>
+          </view>
+        </block>
+
+        <block wx:else>
+          <view class="detail-section">
+            <text class="section-title">基本信息</text>
+            <view class="detail-item">
+              <text class="detail-label">角色名称</text>
+              <text class="detail-value">{{currentRole.roleName}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">角色代码</text>
+              <text class="detail-value">{{currentRole.roleCode}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">角色描述</text>
+              <text class="detail-value">{{currentRole.description || '-'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">状态</text>
+              <text class="detail-value">{{currentRole.status === 1 ? '启用' : '禁用'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">创建时间</text>
+              <text class="detail-value">{{currentRole.createTime || '-'}}</text>
+            </view>
+          </view>
+
+          <view class="detail-section">
+            <text class="section-title">权限配置</text>
+            <view class="permission-display">
+              <view class="permission-item" wx:for="{{permissionList}}" wx:key="key">
+                <view class="permission-info">
+                  <text class="permission-label">{{item.label}}</text>
+                  <text class="permission-level" wx:if="{{item.level}}">L{{item.level}}</text>
+                </view>
+                <text class="permission-status {{permissions[item.key] === 1 ? 'enabled' : 'disabled'}}">
+                  {{permissions[item.key] === 1 ? '有权限' : '无权限'}}
+                </text>
+              </view>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeModal">关闭</button>
+        <button class="btn-confirm" wx:if="{{modalType === 'create' || modalType === 'edit'}}" bindtap="submitForm">{{modalType === 'create' ? '创建' : '保存'}}</button>
+      </view>
+    </view>
+  </view>
+</view>

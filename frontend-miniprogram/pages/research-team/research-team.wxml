@@ -1,0 +1,64 @@
+<view class="app-container">
+  <view class="profile-section">
+    <view class="profile-card">
+      <view class="avatar-container">
+        <image 
+          src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20laboratory%20research%20team%20logo&image_size=square" 
+          mode="aspectFill"
+          class="avatar"
+        />
+      </view>
+      <text class="team-name">{{account.teamName || '科研团队'}}</text>
+      <text class="team-institution">{{account.institution || '-'}}</text>
+    </view>
+  </view>
+
+  <view class="tabs-section">
+    <view class="tabs">
+      <view 
+        class="tab-button {{activeTab === 'patents' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="patents"
+      >
+        我的专利
+      </view>
+      <view 
+        class="tab-button {{activeTab === 'messages' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="messages"
+      >
+        意向消息
+      </view>
+    </view>
+    <view class="tab-content">
+      <view wx:if="{{activeTab === 'patents'}}" class="patents-list">
+        <view wx:if="{{patents.length === 0}}" class="empty-patents">
+          <text class="empty-icon">📋</text>
+          <text class="empty-text">暂无绑定专利</text>
+          <text class="empty-desc">前往"设置-专利管理"点击绑定专利</text>
+        </view>
+        <view wx:for="{{patents}}" wx:key="index" 
+          class="patent-item"
+        >
+          <view class="patent-title">{{item.title || item.patentName || '-'}}</view>
+          <view class="patent-meta">
+            <text class="meta-item">发明人: {{item.inventor || '-'}}</text>
+            <text class="meta-item">所属单位: {{item.applicant || '-'}}</text>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="messages-list">
+        <view wx:for="{{messages}}" wx:key="index" 
+          class="message-item"
+        >
+          <view class="message-sender">{{item.sender || '发送者'}}</view>
+          <view class="message-title">{{item.title || '-'}}</view>
+        </view>
+        <view wx:if="{{messages.length === 0}}" class="empty-patents">
+          <text class="empty-icon">💬</text>
+          <text class="empty-text">暂无意向消息</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

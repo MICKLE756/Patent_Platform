@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.AI_Assistant.backend.patent.mapper.SearchLogMapper">
+
+    <!-- 获取热门搜索关键词 -->
+    <select id="getHotKeywords" resultType="map">
+        SELECT 
+            keyword AS keyword,
+            COUNT(*) AS searchCount
+        FROM search_log
+        WHERE keyword IS NOT NULL AND keyword != ''
+          AND search_time >= #{startTime}
+        GROUP BY keyword
+        ORDER BY searchCount DESC
+        LIMIT 10
+    </select>
+
+</mapper>

@@ -1,0 +1,117 @@
+<view class="container">
+  <view class="card">
+    <view class="title">用户与专利管理</view>
+    
+    <!-- 用户管理 -->
+    <view class="subtitle">用户管理</view>
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索用户" value="{{ userSearchQuery }}" bindinput="bindUserSearch"></input>
+      <view class="search-btn" bindtap="searchUsers">搜索</view>
+    </view>
+    <scroll-view class="table-scroll" scroll-x="true">
+      <view class="table">
+        <view class="table-header">
+          <view class="table-cell id-cell">ID</view>
+          <view class="table-cell username-cell">用户名</view>
+          <view class="table-cell email-cell">邮箱</view>
+          <view class="table-cell status-cell">状态</view>
+          <view class="table-cell time-cell">注册时间</view>
+          <view class="table-cell action-cell">操作</view>
+        </view>
+        <view class="table-row" wx:for="{{ users }}" wx:key="id">
+          <view class="table-cell id-cell">{{ item.id }}</view>
+          <view class="table-cell username-cell">{{ item.username }}</view>
+          <view class="table-cell email-cell">{{ item.email }}</view>
+          <view class="table-cell status-cell">
+            <view class="tag tag-success" wx:if="{{ item.status === '启用' }}">{{ item.status }}</view>
+            <view class="tag tag-danger" wx:else>{{ item.status }}</view>
+          </view>
+          <view class="table-cell time-cell">{{ item.registerTime }}</view>
+          <view class="table-cell action-cell">
+            <view class="audit-actions">
+              <view class="btn btn-primary" bindtap="toggleUserStatus" data-id="{{ item.id }}">{{ item.status === '启用' ? '禁用' : '启用' }}</view>
+              <view class="btn btn-default" bindtap="resetPassword" data-id="{{ item.id }}">重置密码</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <!-- 专利管理 -->
+    <view class="subtitle">专利管理</view>
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索专利" value="{{ patentSearchQuery }}" bindinput="bindPatentSearch"></input>
+      <view class="search-btn" bindtap="searchPatents">搜索</view>
+    </view>
+    <scroll-view class="table-scroll" scroll-x="true">
+      <view class="table">
+        <view class="table-header">
+          <view class="table-cell id-cell">ID</view>
+          <view class="table-cell title-cell">专利名称</view>
+          <view class="table-cell field-cell">技术领域</view>
+          <view class="table-cell status-cell">状态</view>
+          <view class="table-cell time-cell">提交时间</view>
+          <view class="table-cell action-cell">操作</view>
+        </view>
+        <view class="table-row" wx:for="{{ patents }}" wx:key="id">
+          <view class="table-cell id-cell">{{ item.id }}</view>
+          <view class="table-cell title-cell">
+            <view class="content-preview" bindtap="showFullPatentTitle" data-id="{{ item.id }}">
+              {{ item.title.length > 20 ? item.title.substring(0, 20) + '...' : item.title }}
+            </view>
+          </view>
+          <view class="table-cell field-cell">{{ item.field }}</view>
+          <view class="table-cell status-cell">
+            <view class="tag tag-success" wx:if="{{ item.status === '上架' }}">{{ item.status }}</view>
+            <view class="tag tag-danger" wx:else>{{ item.status }}</view>
+          </view>
+          <view class="table-cell time-cell">{{ item.submitTime }}</view>
+          <view class="table-cell action-cell">
+            <view class="audit-actions">
+              <view class="btn btn-primary" bindtap="togglePatentStatus" data-id="{{ item.id }}">{{ item.status === '上架' ? '下架' : '上架' }}</view>
+              <view class="btn btn-default" bindtap="markPatent" data-id="{{ item.id }}">标记</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 标记专利对话框 -->
+  <view wx:if="{{ markDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">标记专利</view>
+      <view class="form-item">
+        <view class="form-label">标记类型</view>
+        <view class="radio-group">
+          <label wx:for="{{ markTypes }}" wx:key="value" class="radio-item">
+            <radio value="{{ item.value }}" checked="{{ markForm.type === item.value }}" bindchange="bindMarkType"></radio>
+            <span>{{ item.label }}</span>
+          </label>
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">标记理由</view>
+        <textarea class="form-textarea" value="{{ markForm.reason }}" bindinput="bindMarkReason"></textarea>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-default" bindtap="cancelMark">取消</view>
+        <view class="btn btn-primary" bindtap="confirmMark">确定</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 专利名称完整显示对话框 -->
+  <view wx:if="{{ patentTitleDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">专利名称</view>
+      <view class="form-item">
+        <view class="form-label">名称</view>
+        <view class="full-content">{{ patentTitleDialogContent }}</view>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-primary" bindtap="closePatentTitleDialog">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

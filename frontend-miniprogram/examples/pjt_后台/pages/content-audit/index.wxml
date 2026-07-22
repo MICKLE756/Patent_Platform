@@ -1,0 +1,125 @@
+<view class="container">
+  <view class="card">
+    <view class="title">内容审核中心</view>
+    
+    <!-- 待审核列表 -->
+    <view class="subtitle">待审核列表</view>
+    <scroll-view class="table-scroll" scroll-x="true">
+      <view class="table">
+        <view class="table-header">
+          <view class="table-cell id-cell">ID</view>
+          <view class="table-cell type-cell">类型</view>
+          <view class="table-cell content-cell">内容</view>
+          <view class="table-cell user-cell">提交用户</view>
+          <view class="table-cell time-cell">提交时间</view>
+          <view class="table-cell action-cell">操作</view>
+        </view>
+        <view class="table-row" wx:for="{{ pendingItems }}" wx:key="id">
+          <view class="table-cell id-cell">{{ item.id }}</view>
+          <view class="table-cell type-cell">{{ item.type }}</view>
+          <view class="table-cell content-cell">
+            <view class="content-preview" bindtap="showFullContent" data-id="{{ item.id }}">
+              {{ item.contentPreview }}
+            </view>
+          </view>
+          <view class="table-cell user-cell">{{ item.user }}</view>
+          <view class="table-cell time-cell">{{ item.submitTime }}</view>
+          <view class="table-cell action-cell">
+            <view class="audit-actions">
+              <view class="btn btn-primary" bindtap="approveItem" data-id="{{ item.id }}">通过</view>
+              <view class="btn btn-danger" bindtap="rejectItem" data-id="{{ item.id }}">驳回</view>
+              <view class="btn btn-default" bindtap="editItem" data-id="{{ item.id }}">修改</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <!-- 审核日记 -->
+    <view class="subtitle">审核日记</view>
+    <scroll-view class="table-scroll" scroll-x="true">
+      <view class="table">
+        <view class="table-header">
+          <view class="table-cell id-cell">ID</view>
+          <view class="table-cell item-id-cell">项目ID</view>
+          <view class="table-cell type-cell">类型</view>
+          <view class="table-cell action-cell-small">操作</view>
+          <view class="table-cell operator-cell">操作人</view>
+          <view class="table-cell time-cell">操作时间</view>
+          <view class="table-cell reason-cell">理由</view>
+        </view>
+        <view class="table-row" wx:for="{{ auditHistory }}" wx:key="id">
+          <view class="table-cell id-cell">{{ item.id }}</view>
+          <view class="table-cell item-id-cell">{{ item.itemId }}</view>
+          <view class="table-cell type-cell">{{ item.type }}</view>
+          <view class="table-cell action-cell-small">{{ item.action }}</view>
+          <view class="table-cell operator-cell">{{ item.operator }}</view>
+          <view class="table-cell time-cell">{{ item.operationTime }}</view>
+          <view class="table-cell reason-cell">
+            <view class="content-preview" bindtap="showFullReason" data-id="{{ item.id }}">
+              {{ item.reasonPreview }}
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 驳回理由对话框 -->
+  <view wx:if="{{ rejectDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">驳回理由</view>
+      <view class="form-item">
+        <view class="form-label">理由</view>
+        <textarea class="form-textarea" value="{{ rejectForm.reason }}" bindinput="bindRejectReason"></textarea>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-default" bindtap="cancelReject">取消</view>
+        <view class="btn btn-primary" bindtap="confirmReject">确定</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 修改内容对话框 -->
+  <view wx:if="{{ editDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">修改内容</view>
+      <view class="form-item">
+        <view class="form-label">内容</view>
+        <textarea class="form-textarea" value="{{ editForm.content }}" bindinput="bindEditContent"></textarea>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-default" bindtap="cancelEdit">取消</view>
+        <view class="btn btn-primary" bindtap="confirmEdit">确定</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 完整内容对话框 -->
+  <view wx:if="{{ contentDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">完整内容</view>
+      <view class="form-item">
+        <view class="form-label">内容</view>
+        <view class="full-content">{{ contentDialogContent }}</view>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-primary" bindtap="closeContentDialog">关闭</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 完整理由对话框 -->
+  <view wx:if="{{ reasonDialogVisible }}" class="dialog-overlay">
+    <view class="dialog">
+      <view class="dialog-title">完整理由</view>
+      <view class="form-item">
+        <view class="form-label">理由</view>
+        <view class="full-content">{{ reasonDialogContent }}</view>
+      </view>
+      <view class="dialog-footer">
+        <view class="btn btn-primary" bindtap="closeReasonDialog">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

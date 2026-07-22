@@ -1,0 +1,89 @@
+<view class="container">
+  <view wx:if="{{mode === 'add'}}">
+    <view class="tip-box">
+      <text class="tip-text">请填写企业信息完成身份绑定，带 <text class="required">*</text> 为必填项</text>
+    </view>
+
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>公司名称</text>
+        <input class="form-input" placeholder="请输入公司名称" value="{{form.companyName}}" bindinput="onInput" data-field="companyName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>联系人姓名</text>
+        <input class="form-input" placeholder="请输入联系人姓名" value="{{form.contactName}}" bindinput="onInput" data-field="contactName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label"><text class="required">*</text>营业执照号码</text>
+        <input class="form-input" placeholder="请输入营业执照号码" value="{{form.businessLicense}}" bindinput="onInput" data-field="businessLicense" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">公司地址</text>
+        <input class="form-input" placeholder="请输入公司地址" value="{{form.companyAddress}}" bindinput="onInput" data-field="companyAddress" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">公司简介</text>
+        <textarea class="form-input form-textarea" placeholder="请输入公司简介" value="{{form.companyIntro}}" bindinput="onInput" data-field="companyIntro" maxlength="200" />
+      </view>
+    </view>
+
+    <button class="submit-btn" bindtap="onSubmit" disabled="{{loading || !form.companyName || !form.contactName || !form.businessLicense}}">
+      {{loading ? '提交中...' : '提交绑定'}}
+    </button>
+  </view>
+
+  <view wx:if="{{mode === 'edit'}}">
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">公司名称</text>
+        <input class="form-input" placeholder="请输入公司名称" value="{{form.companyName}}" bindinput="onInput" data-field="companyName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">联系人姓名</text>
+        <input class="form-input" placeholder="请输入联系人姓名" value="{{form.contactName}}" bindinput="onInput" data-field="contactName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">营业执照号码</text>
+        <input class="form-input" placeholder="请输入营业执照号码" value="{{form.businessLicense}}" bindinput="onInput" data-field="businessLicense" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">公司地址</text>
+        <input class="form-input" placeholder="请输入公司地址" value="{{form.companyAddress}}" bindinput="onInput" data-field="companyAddress" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">公司简介</text>
+        <textarea class="form-input form-textarea" placeholder="请输入公司简介" value="{{form.companyIntro}}" bindinput="onInput" data-field="companyIntro" maxlength="200" />
+      </view>
+    </view>
+
+    <button class="submit-btn" bindtap="onSubmit" disabled="{{loading}}">
+      {{loading ? '提交中...' : '保存修改'}}
+    </button>
+  </view>
+
+  <view wx:if="{{mode === 'view'}}">
+    <view class="info-card">
+      <view class="info-item">
+        <text class="info-label">公司名称</text>
+        <text class="info-value">{{form.companyName || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">联系人</text>
+        <text class="info-value">{{form.contactName || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">营业执照号码</text>
+        <text class="info-value">{{form.businessLicense || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">公司地址</text>
+        <text class="info-value">{{form.companyAddress || '-'}}</text>
+      </view>
+      <view class="info-item" style="border-bottom: none;">
+        <text class="info-label">公司简介</text>
+        <text class="info-value">{{form.companyIntro || '暂无简介'}}</text>
+      </view>
+    </view>
+  </view>
+
+</view>

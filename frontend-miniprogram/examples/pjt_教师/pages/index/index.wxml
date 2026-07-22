@@ -1,0 +1,138 @@
+<view class="app-container">
+  <!-- 顶部名片区 -->
+  <view class="profile-section">
+    <view class="profile-card">
+      <view class="avatar-container">
+        <image 
+          src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20teacher%20avatar%20portrait&image_size=square" 
+          mode="aspectFill"
+          class="avatar"
+        />
+      </view>
+      <text class="teacher-name">张教授</text>
+      <text class="teacher-college">计算机科学与技术学院</text>
+    </view>
+  </view>
+
+  <!-- 中间能力展示区 -->
+  <view class="skills-section">
+    <text class="section-title">能力展示</text>
+    <view class="radar-chart-container">
+      <canvas canvas-id="radarChart" class="radar-chart"></canvas>
+    </view>
+  </view>
+
+  <!-- 底部内容选项卡 -->
+  <view class="tabs-section">
+    <view class="tabs">
+      <view 
+        class="tab-button {{activeTab === 'patents' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="patents"
+      >
+        我的专利
+      </view>
+      <view 
+        class="tab-button {{activeTab === 'messages' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="messages"
+      >
+        意向消息
+      </view>
+    </view>
+    <view class="tab-content">
+      <view wx:if="{{activeTab === 'patents'}}" class="patents-list">
+        <view wx:for="{{patentsData}}" wx:key="id" 
+          class="patent-item"
+          bindtap="handlePatentClick"
+          data-patent="{{item}}"
+        >
+          <view class="patent-title">{{item.title}}</view>
+        </view>
+      </view>
+      <view wx:else class="messages-list">
+        <view wx:for="{{messagesData}}" wx:key="id" 
+          class="message-item {{confirmedMessages.includes(item.id) ? 'confirmed' : ''}} {{rejectedMessages.includes(item.id) ? 'rejected' : ''}}"
+          bindtap="handleMessageClick"
+          data-message="{{item}}"
+        >
+          <view class="message-sender">{{item.sender}}</view>
+          <view class="message-title">{{item.title}}</view>
+          <view wx:if="{{isConfirmed(item.id)}}" class="confirmed-badge">已确认</view>
+          <view wx:elif="{{isRejected(item.id)}}" class="rejected-badge">已拒绝</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 专利详情模态框 -->
+  <view wx:if="{{selectedPatent}}" class="modal-overlay" catchtap="closeModal">
+    <view class="modal-content patent-modal" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedPatent.title}}</text>
+        <view class="close-btn" bindtap="closeModal">×</view>
+      </view>
+      <view class="modal-body">
+        <view class="comments-section">
+          <text class="comments-title">系统留言记录</text>
+          <view class="comments-list">
+            <view wx:for="{{selectedPatent.comments}}" wx:key="id" class="comment-item">
+              <view class="comment-avatar">
+                <image src="{{item.avatar}}" mode="aspectFill" />
+              </view>
+              <view class="comment-body">
+                <view class="comment-header">
+                  <text class="comment-user">{{item.user}}</text>
+                  <text class="comment-time">{{item.time}}</text>
+                </view>
+                <text class="comment-content">{{item.content}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="views-footer">
+          <text class="label">浏览次数：</text>
+          <text class="value">{{selectedPatent.views}} 次</text>
+        </view>
+        <view class="close-modal-btn" bindtap="closeModal">
+          关闭
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 消息详情模态框 -->
+  <view wx:if="{{selectedMessage}}" class="modal-overlay" catchtap="closeModal">
+        <view class="modal-content" catchtap="stopPropagation">
+          <view class="modal-header">
+            <text class="modal-title">{{selectedMessage.title}}</text>
+            <view class="close-btn" bindtap="closeModal">×</view>
+          </view>
+          <view class="modal-body">
+            <view class="message-info">
+              <text class="sender">发送者：{{selectedMessage.sender}}</text>
+              <text class="time">{{selectedMessage.time}}</text>
+            </view>
+            <text class="message-content">{{selectedMessage.content}}</text>
+          </view>
+          <view class="modal-footer">
+            <view wx:if="{{selectedMessage && isConfirmed(selectedMessage.id)}}" class="confirmed-btn" disabled>
+              已确认
+            </view>
+            <view wx:elif="{{selectedMessage && isRejected(selectedMessage.id)}}" class="rejected-btn" disabled>
+              已拒绝
+            </view>
+            <view wx:else class="action-buttons">
+              <view class="reject-btn" bindtap="rejectMessage">
+                拒绝
+              </view>
+              <view class="confirm-btn" bindtap="confirmMessage">
+                确认
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+</view>

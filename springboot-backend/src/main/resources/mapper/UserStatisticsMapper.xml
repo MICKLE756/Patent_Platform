@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.AI_Assistant.backend.statistics.mapper.UserStatisticsMapper">
+
+    <select id="selectByDate" resultType="com.AI_Assistant.backend.statistics.entity.UserStatistics">
+        SELECT * FROM user_statistics WHERE stat_date = #{statDate}
+    </select>
+
+    <!-- 原子增加活跃用户数 -->
+    <update id="incrementActiveUserCount">
+        UPDATE user_statistics 
+        SET active_user_count = active_user_count + 1 
+        WHERE stat_date = #{statDate}
+    </update>
+
+    <!-- 原子增加新增用户数 -->
+    <update id="incrementNewUserCount">
+        UPDATE user_statistics 
+        SET new_user_count = new_user_count + 1 
+        WHERE stat_date = #{statDate}
+    </update>
+
+    <!-- 原子增加新增企业数 -->
+    <update id="incrementNewEnterpriseCount">
+        UPDATE user_statistics 
+        SET new_enterprise_count = new_enterprise_count + 1 
+        WHERE stat_date = #{statDate}
+    </update>
+
+    <!-- 原子增加新增科研团队数 -->
+    <update id="incrementNewResearchTeamCount">
+        UPDATE user_statistics 
+        SET new_research_team_count = new_research_team_count + 1 
+        WHERE stat_date = #{statDate}
+    </update>
+
+</mapper>

@@ -1,0 +1,110 @@
+.settings-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.setting-group {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.item-icon {
+  font-size: 18px;
+}
+
+.item-text {
+  font-size: 15px;
+  color: #333;
+}
+
+.arrow-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.4;
+}
+
+.status-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.status-tag.active {
+  background: #e8f7ef;
+  color: #07c160;
+}
+
+.status-tag.admin {
+  background: #ebe6ff;
+  color: #724ed8;
+}
+
+.section-title {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+.info-group {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.info-row {
+  display: flex;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #999;
+  width: 85px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+}
+
+.tip-box {
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.tip-text {
+  font-size: 13px;
+  color: #d48806;
+  line-height: 1.6;
+}

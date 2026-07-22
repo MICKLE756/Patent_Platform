@@ -1,0 +1,5 @@
+{
+  "navigationBarTitleText": "专利详情",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50
+}

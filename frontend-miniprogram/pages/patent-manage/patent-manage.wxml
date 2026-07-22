@@ -1,0 +1,26 @@
+<view class="container">
+  <view class="action-bar">
+    <text class="total-text">已绑定: <text class="highlight">{{patents.length}}</text> 件</text>
+    <button class="bind-btn" bindtap="goToAddPatent">+ 绑定专利</button>
+  </view>
+
+  <view class="patent-list">
+    <view wx:if="{{patents.length === 0 && !loading}}" class="empty-box">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无绑定专利</text>
+      <text class="empty-desc">前往设置页点击"绑定专利"进行添加</text>
+    </view>
+    
+    <view wx:for="{{patents}}" wx:key="patentId" class="patent-card">
+      <view class="patent-header">
+        <view class="patent-title">{{item.title || '-'}}</view>
+        <button wx:if="{{!loading}}" class="unbind-btn" size="mini" bindtap="onUnbindPatent" data-patent="{{item}}">解除</button>
+        <button wx:else class="unbind-btn loading" size="mini" loading disabled>处理中</button>
+      </view>
+      <view class="patent-meta">
+        <text class="meta-item">发明人: {{item.inventors || '-'}}</text>
+        <text class="meta-item">所属单位: {{item.applicant || '-'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

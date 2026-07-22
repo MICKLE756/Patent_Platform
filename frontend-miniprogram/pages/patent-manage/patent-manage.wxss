@@ -1,0 +1,116 @@
+.container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 10px;
+}
+
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.total-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.highlight {
+  color: #007aff;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.action-bar .bind-btn {
+  background: #007aff;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  padding: 0 12px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.action-bar .bind-btn::after {
+  border: none;
+}
+
+.patent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.patent-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.patent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.patent-title {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+  flex: 1;
+  padding-right: 10px;
+}
+
+.unbind-btn {
+  background: #ff3b30 !important;
+  color: white !important;
+  font-size: 12px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.patent-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-item {
+  font-size: 12px;
+  color: #999;
+}
+
+.empty-box {
+  background: white;
+  border-radius: 12px;
+  padding: 50px 10px 30px;
+  text-align: center;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.empty-icon {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: #333;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.empty-desc {
+  font-size: 12px;
+  color: #999;
+  display: block;
+}

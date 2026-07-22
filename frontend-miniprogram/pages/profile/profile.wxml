@@ -1,0 +1,52 @@
+<view class="profile-container">
+  <view class="user-card">
+    <view class="avatar-box">
+      <text class="avatar-text">{{avatarFirstChar}}</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+      <view class="meta-row">
+        <text class="user-id">ID: {{userId}}</text>
+        <text class="user-role {{roleClass}}">{{roleName}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-list">
+    <view class="menu-item" bindtap="onMenuItemClick" data-menu="search-history">
+      <view class="menu-left">
+        <image class="menu-icon" src="/images/history.png"></image>
+        <text class="menu-text">搜索历史</text>
+      </view>
+      <image class="arrow-icon" src="/images/arrow-right.png"></image>
+    </view>
+    
+    <view class="menu-item" bindtap="onMenuItemClick" data-menu="collection">
+      <view class="menu-left">
+        <image class="menu-icon" src="/images/collection.png"></image>
+        <text class="menu-text">我的收藏</text>
+      </view>
+      <image class="arrow-icon" src="/images/arrow-right.png"></image>
+    </view>
+
+    <view class="menu-item" bindtap="onMenuItemClick" data-menu="settings">
+      <view class="menu-left">
+        <image class="menu-icon" src="/images/settings.png"></image>
+        <text class="menu-text">系统设置</text>
+      </view>
+      <image class="arrow-icon" src="/images/arrow-right.png"></image>
+    </view>
+
+    <view class="menu-item" bindtap="onMenuItemClick" data-menu="about">
+      <view class="menu-left">
+        <image class="menu-icon" src="/images/about.png"></image>
+        <text class="menu-text">关于我们</text>
+      </view>
+      <image class="arrow-icon" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <view class="logout-section">
+    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
+</view>

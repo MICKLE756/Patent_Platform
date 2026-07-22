@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/dashboard/index",
+    "pages/content-audit/index",
+    "pages/user-patent-management/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#2c3e50",
+    "navigationBarTitleText": "AI专利助手后台",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#409eff",
+    "backgroundColor": "#2c3e50",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/dashboard/index",
+        "text": "数据看板"
+      },
+      {
+        "pagePath": "pages/content-audit/index",
+        "text": "内容审核"
+      },
+      {
+        "pagePath": "pages/user-patent-management/index",
+        "text": "用户管理"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

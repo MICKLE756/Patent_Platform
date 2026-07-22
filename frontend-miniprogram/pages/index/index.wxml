@@ -1,0 +1,623 @@
+<view class="page-container">
+  <scroll-view wx:if="{{menuList.length > 1}}" class="segment-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="tabs-container">
+      <text 
+        class="tab-item {{activeMenu === item.page ? 'active' : ''}}" 
+        wx:for="{{menuList}}" 
+        wx:key="page"
+        bindtap="onTabChange"
+        data-page="{{item.page}}"
+        data-label="{{item.label}}"
+      >{{item.label}}</text>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{activeMenu === 'patent-assistant'}}" class="ai-area {{menuList.length > 1 ? 'has-tabs' : ''}}">
+    <scroll-view class="msg-scroll-view" scroll-y scroll-into-view="msg-{{msgList.length-1}}" enhanced>
+      <view wx:for="{{msgList}}" wx:key="index" id="msg-{{index}}">
+        <view class="msg-item user-msg" wx:if="{{item.role === 'user'}}">
+          <text class="msg-content">{{item.content}}</text>
+        </view>
+          
+        <view class="msg-item ai-msg" wx:if="{{item.role === 'assistant'}}">
+          <view class="ai-avatar">AI</view>
+          <view class="msg-content">
+            <text wx:if="{{item.content}}">{{item.content}}</text>
+              
+            <view class="patent-cards" wx:if="{{item.patents && item.patents.length > 0}}">
+              <view class="patent-card" wx:for="{{item.patents}}" wx:key="id" wx:for-item="patent">
+                <view class="patent-header">
+                  <text class="patent-name">{{patent.name}}</text>
+                  <text class="fit-rate">{{patent.fitRate}}% 适配</text>
+                </view>
+                <view class="patent-tags">
+                  <text class="tag" wx:for="{{patent.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+                </view>
+                <view class="recommend-reason">
+                  <text class="label">推荐理由:</text>
+                  <text class="reason-text">{{patent.reason}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+        
+      <view class="loading-msg" wx:if="{{loading}}">
+        <view class="ai-avatar">AI</view>
+        <view class="typing">
+          <text class="dot"></text>
+          <text class="dot"></text>
+          <text class="dot"></text>
+        </view>
+      </view>
+      <view style="height:20px"></view>
+    </scroll-view>
+  
+    <view class="ai-input-bar">
+      <input 
+        class="input-text" 
+        placeholder="说点什么..." 
+        value="{{inputText}}"
+        bindinput="onInput"
+        confirm-type="send"
+        bindconfirm="sendMessage"
+      />
+      <button class="btn-send" bindtap="sendMessage" disabled="{{loading || !inputText.trim()}}">发送</button>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'patent-list'}}" class="common-page">
+    <view class="search-area">
+      <view class="search-bar">
+        <input 
+          class="search-input" 
+          placeholder="关键词（标题/摘要/发明人）" 
+          value="{{keyword}}"
+          bindinput="onKeywordInput"
+          confirm-type="search"
+          bindconfirm="onKeywordConfirm"
+        />
+        <button class="search-btn" bindtap="onSearch">搜索</button>
+      </view>
+      
+      <view class="filter-section">
+        <view class="filter-row">
+          <text class="filter-label">技术领域</text>
+          <view class="filter-chips">
+            <text 
+              wx:for="{{techFields}}" 
+              wx:key="id"
+              class="chip {{techField === item.id ? 'active' : ''}}"
+              bindtap="onFilterChange"
+              data-type="techField"
+              data-value="{{item.id}}"
+            >{{item.name}}</text>
+          </view>
+        </view>
+        
+        <view class="filter-row">
+          <text class="filter-label">专利类型</text>
+          <view class="filter-chips">
+            <text 
+              wx:for="{{patentTypes}}" 
+              wx:key="id"
+              class="chip {{patentType === item.id ? 'active' : ''}}"
+              bindtap="onFilterChange"
+              data-type="patentType"
+              data-value="{{item.id}}"
+            >{{item.name}}</text>
+          </view>
+        </view>
+        
+        <view class="filter-row">
+          <text class="filter-label">法律状态</text>
+          <view class="filter-chips">
+            <text 
+              wx:for="{{legalStatuses}}" 
+              wx:key="id"
+              class="chip {{legalStatus === item.id ? 'active' : ''}}"
+              bindtap="onFilterChange"
+              data-type="legalStatus"
+              data-value="{{item.id}}"
+            >{{item.name}}</text>
+          </view>
+        </view>
+        
+        <view class="filter-row">
+          <text class="filter-label">有效性</text>
+          <view class="filter-chips">
+            <text 
+              wx:for="{{validities}}" 
+              wx:key="id"
+              class="chip {{validity === item.id ? 'active' : ''}}"
+              bindtap="onFilterChange"
+              data-type="validity"
+              data-value="{{item.id}}"
+            >{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="result-list">
+      <view wx:if="{{resultList.length === 0 && !loadingMore}}" class="empty-box">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">暂无专利数据</text>
+      </view>
+      <block wx:else>
+        <view class="result-item" wx:for="{{resultList}}" wx:key="patentId" bindtap="goToDetail" data-id="{{item.patentId}}">
+          <view class="item-header">
+            <text class="patent-title">{{item.title || '-'}}</text>
+          </view>
+          <view class="item-tags">
+            <text wx:if="{{item.displayTechField}}" class="tag">领域: {{item.displayTechField}}</text>
+            <text wx:if="{{item.patentType}}" class="tag">类型: {{item.patentType}}</text>
+            <text wx:if="{{item.inventors}}" class="tag">发明人: {{item.inventors}}</text>
+          </view>
+          <view class="item-footer">
+            <text wx:if="{{item.applicationDate}}" class="year">{{item.applicationDate}}</text>
+            <text wx:if="{{item.applicant}}" class="applicant">{{item.applicant}}</text>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{loadingMore}}" class="loading-more">
+        <text class="loading-text">加载中...</text>
+      </view>
+    </view>
+    <view style="height:20px"></view>
+  </view>
+    
+  <view wx:if="{{activeMenu === 'team-patents'}}" class="common-page">
+    <view wx:if="{{teamPatents.length === 0}}" class="empty-view">
+      <text class="tip-icon">📋</text>
+      <text class="tip-text">暂无绑定专利</text>
+      <text class="tip-desc">前往"设置-专利管理"点击绑定专利</text>
+    </view>
+    <view wx:else class="result-list">
+      <view wx:for="{{teamPatents}}" wx:key="patentId" class="result-item" bindtap="goToPatentDetail" data-id="{{item.patentId}}">
+        <view class="item-header">
+          <view class="patent-title">{{item.title || '-'}}</view>
+        </view>
+        <view class="item-tags">
+          <text wx:if="{{item.displayTechField}}" class="tag">领域: {{item.displayTechField}}</text>
+          <text wx:if="{{item.patentType}}" class="tag">类型: {{item.patentType}}</text>
+          <text wx:if="{{item.inventors}}" class="tag">发明人: {{item.inventors}}</text>
+        </view>
+        <view class="item-footer">
+          <text wx:if="{{item.applicationDate}}" class="year">{{item.applicationDate}}</text>
+          <text wx:if="{{item.applicant}}" class="applicant">{{item.applicant}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'team-messages'}}" class="common-page">
+    <view class="empty-view">
+      <text class="tip-icon">💬</text>
+      <text class="tip-text">暂无意向消息</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'intention-review'}}" class="common-page">
+    <view class="empty-view">
+      <text class="tip-icon">📝</text>
+      <text class="tip-text">意向审核 - 功能开发中...</text>
+    </view>
+  </view>
+    
+  <view wx:if="{{activeMenu === 'dashboard'}}" class="dashboard-page">
+    <view class="dashboard-card">
+      <view class="dashboard-title">数据看板</view>
+      
+      <view class="stats-container">
+        <view class="stat-item">
+          <view class="stat-value">{{dashboardData.todayActiveUsers}}</view>
+          <view class="stat-label">今日活跃用户数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{dashboardData.todayNewPatents}}</view>
+          <view class="stat-label">专利总数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{dashboardData.todayMatchConversations}}</view>
+          <view class="stat-label">匹配对话次数</view>
+        </view>
+      </view>
+      
+      <view class="dashboard-subtitle">核心指标</view>
+      <view class="stats-container">
+        <view class="stat-item">
+          <view class="stat-label">专利匹配成功率</view>
+          <view class="stat-value">{{dashboardData.patentMatchRate}}%</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-label">意向转化率</view>
+          <view class="stat-value">{{dashboardData.intentionConversionRate}}%</view>
+        </view>
+      </view>
+      
+      <view class="dashboard-subtitle">用户增长趋势</view>
+      <view class="chart-container">
+        <canvas id="userGrowthChart" canvas-id="userGrowthChart" style="width: 100%; height: 100%;"></canvas>
+      </view>
+      
+      <view class="dashboard-subtitle">热门分析</view>
+      <view class="analysis-container">
+        <view class="dashboard-card-inner">
+          <view class="dashboard-subtitle">高频搜索技术领域Top10</view>
+          <scroll-view class="table-scroll" scroll-x="true">
+            <view class="table">
+              <view class="table-header">
+                <view class="table-cell rank-cell">排名</view>
+                <view class="table-cell field-cell">技术领域</view>
+                <view class="table-cell count-cell">搜索次数</view>
+              </view>
+              <view class="table-row" wx:for="{{dashboardData.hotTechFields}}" wx:key="rank">
+                <view class="table-cell rank-cell">{{item.rank}}</view>
+                <view class="table-cell field-cell">{{item.field}}</view>
+                <view class="table-cell count-cell">{{item.count}}</view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+        
+        <view class="dashboard-card-inner">
+          <view class="dashboard-subtitle">热门专利Top10</view>
+          <scroll-view class="table-scroll" scroll-x="true">
+            <view class="table">
+              <view class="table-header">
+                <view class="table-cell rank-cell">排名</view>
+                <view class="table-cell title-cell">专利名称</view>
+                <view class="table-cell views-cell">浏览次数</view>
+              </view>
+              <view class="table-row" wx:for="{{dashboardData.hotPatents}}" wx:key="rank">
+                <view class="table-cell rank-cell">{{item.rank}}</view>
+                <view class="table-cell title-cell">{{item.title}}</view>
+                <view class="table-cell views-cell">{{item.views}}</view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </view>
+  </view>
+    
+  <view wx:if="{{activeMenu === 'content-audit'}}" class="common-page">
+    <view class="empty-view">
+      <text class="tip-icon">✅</text>
+      <text class="tip-text">内容审核 - 功能开发中</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'admin-management'}}" class="dashboard-page admin-page">
+    <view class="dashboard-card">
+      <view class="dashboard-title">管理后台</view>
+
+      <view class="dashboard-subtitle">用户管理</view>
+      <view class="toolbar">
+        <view class="user-filter">
+          <picker mode="selector" range="{{adminUserTypeOptions}}" range-key="label" bindchange="onAdminUserTypeChange">
+            <view class="picker-box">
+              <text>{{adminUserTypeOptions[adminUserTypeIndex].label}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <button class="add-btn" bindtap="openCreateModal" data-type="user" wx:if="{{canAddUser}}">新增用户</button>
+      </view>
+      <view class="loading-box" wx:if="{{adminLoading}}">
+        <text class="loading-text">加载中...</text>
+      </view>
+      <view class="list-section" wx:else>
+        <view class="list">
+          <view class="list-item" wx:for="{{adminUserList}}" wx:key="id">
+            <view class="item-avatar"><text>{{item.avatarChar}}</text></view>
+            <view class="item-info" bindtap="openDetailModal" data-item="{{item}}" data-type="user">
+              <text class="item-name">{{item.displayName}}</text>
+              <text class="item-meta">{{item.userTypeDisplay}} | {{item.statusLabel}}</text>
+              <text class="item-meta" wx:if="{{item.contactPhone}}">{{item.contactPhone}}</text>
+            </view>
+            <view class="item-actions">
+              <text class="action-btn upgrade" wx:if="{{item.userType===0 && permissions.permissionSystemConfig===1}}" bindtap="upgradeToAdmin" data-item="{{item}}">升级</text>
+              <text class="action-btn edit" wx:if="{{item.userType===1 && permissions.permissionEnterpriseEdit===1}}" bindtap="openEditModal" data-item="{{item}}" data-type="user">编辑</text>
+              <text class="action-btn edit" wx:if="{{item.userType===2 && permissions.permissionResearchEdit===1}}" bindtap="openEditModal" data-item="{{item}}" data-type="user">编辑</text>
+              <text class="action-btn delete" wx:if="{{item.userType===1 && permissions.permissionEnterpriseDelete===1}}" bindtap="deleteItem" data-item="{{item}}" data-type="user">删除</text>
+              <text class="action-btn delete" wx:if="{{item.userType===2 && permissions.permissionResearchDelete===1}}" bindtap="deleteItem" data-item="{{item}}" data-type="user">删除</text>
+            </view>
+          </view>
+          <view class="empty-box" wx:if="{{adminUserList.length===0}}">
+            <text class="empty-text">暂无用户数据</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="dashboard-subtitle" wx:if="{{showPatentTab}}">专利管理</view>
+      <block wx:if="{{showPatentTab}}">
+        <view class="toolbar patent-toolbar">
+          <view class="search-box">
+            <input class="search-input" placeholder="搜索专利名称或申请人" value="{{patentSearchKeyword}}" bindinput="onPatentSearchInput"/>
+            <text class="search-btn" bindtap="onPatentSearch">搜索</text>
+          </view>
+          <button class="add-btn" bindtap="openCreateModal" data-type="patent" wx:if="{{canAddPatent}}">新增专利</button>
+        </view>
+        <view class="list-section">
+          <view class="list">
+            <view class="list-item patent-item" wx:for="{{adminPatentList}}" wx:key="patentId">
+              <view class="item-info" bindtap="openDetailModal" data-item="{{item}}" data-type="patent">
+                <text class="item-name">{{item.title}}</text>
+                <text class="item-meta">申请人: {{item.applicant}} | {{item.patentType}}</text>
+                <text class="item-meta">状态: {{item.legalStatus}} | {{item.validity}}</text>
+              </view>
+              <view class="item-actions">
+                <text class="action-btn edit" wx:if="{{permissions.permissionPatentAudit===1}}" bindtap="openEditModal" data-item="{{item}}" data-type="patent">编辑</text>
+                <text class="action-btn delete" wx:if="{{permissions.permissionPatentAudit===1}}" bindtap="deleteItem" data-item="{{item}}" data-type="patent">删除</text>
+              </view>
+            </view>
+            <view class="empty-box" wx:if="{{adminPatentList.length===0}}">
+              <text class="empty-text">暂无专利数据</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view class="pagination" wx:if="{{adminPages>1}}">
+        <text class="page-btn {{adminPageNum<=1?'disabled':''}}" bindtap="onAdminPrevPage">上一页</text>
+        <text class="page-info">{{adminPageNum}} / {{adminPages}}</text>
+        <text class="page-btn {{adminPageNum>=adminPages?'disabled':''}}" bindtap="onAdminNextPage">下一页</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'role-management'}}" class="dashboard-page role-page">
+    <view class="dashboard-card">
+      <view class="dashboard-title">角色管理</view>
+      <view class="toolbar">
+        <button class="add-btn">新增角色</button>
+      </view>
+      <view class="loading-box" wx:if="{{roleLoading}}">
+        <text class="loading-text">加载中...</text>
+      </view>
+      <view class="list-section" wx:else>
+        <view class="list">
+          <view class="list-item" wx:for="{{roleList}}" wx:key="id">
+            <view class="item-info">
+              <text class="item-name">{{item.name}}</text>
+              <text class="item-meta">描述: {{item.description || '暂无描述'}}</text>
+              <view class="permission-tags">
+                <text class="permission-tag" bindtap="openRolePermissionModal" data-item="{{item}}">查看权限</text>
+              </view>
+            </view>
+            <view class="item-actions">
+              <text class="action-btn edit" bindtap="openRoleEditModal" data-item="{{item}}">编辑</text>
+              <text class="action-btn delete" bindtap="deleteRole" data-item="{{item}}">删除</text>
+            </view>
+          </view>
+          <view class="empty-box" wx:if="{{roleList.length===0}}">
+            <text class="empty-text">暂无角色数据</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'message-management'}}" class="common-page message-page">
+    <view class="tabs">
+      <text class="tab-item {{messageActiveTab==='intention'?'active':''}}" bindtap="onMessageTabChange" data-key="intention">意向审核</text>
+      <text class="tab-item {{messageActiveTab==='notice'?'active':''}}" bindtap="onMessageTabChange" data-key="notice">通知管理</text>
+      <text class="tab-item {{messageActiveTab==='log'?'active':''}}" bindtap="onMessageTabChange" data-key="log">系统日志</text>
+    </view>
+    <view class="loading-box" wx:if="{{messageLoading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+    <view class="content" wx:else>
+      <view wx:if="{{messageActiveTab==='intention'}}">
+        <view class="list">
+          <view class="list-item" wx:for="{{intentionList}}" wx:key="id">
+            <view class="item-info">
+              <text class="item-name">{{item.title}}</text>
+              <text class="item-meta">{{item.patentName}}</text>
+              <text class="item-meta">{{item.content}}</text>
+            </view>
+            <view class="item-actions">
+              <text class="action-btn edit">通过</text>
+              <text class="action-btn delete">拒绝</text>
+            </view>
+          </view>
+          <view class="empty-box" wx:if="{{intentionList.length===0}}">
+            <text class="empty-text">暂无待审核意向</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{messageActiveTab==='notice'}}">
+        <view class="list">
+          <view class="list-item" wx:for="{{noticeList}}" wx:key="id">
+            <view class="item-info">
+              <text class="item-name">{{item.title}}</text>
+              <text class="item-meta">{{item.content}}</text>
+              <text class="item-meta">{{item.createTime}}</text>
+            </view>
+            <view class="item-actions">
+              <text class="action-btn edit">编辑</text>
+              <text class="action-btn delete">删除</text>
+            </view>
+          </view>
+          <view class="empty-box" wx:if="{{noticeList.length===0}}">
+            <text class="empty-text">暂无通知</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{messageActiveTab==='log'}}">
+        <view class="list">
+          <view class="list-item" wx:for="{{logList}}" wx:key="id">
+            <view class="item-info">
+              <text class="item-name">{{item.operation}}</text>
+              <text class="item-meta">{{item.userName}} | {{item.time}}</text>
+              <text class="item-meta">{{item.description}}</text>
+            </view>
+          </view>
+          <view class="empty-box" wx:if="{{logList.length===0}}">
+            <text class="empty-text">暂无日志</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activeMenu === 'system-management'}}" class="common-page">
+    <view class="empty-view">
+      <text class="tip-icon">⚙️</text>
+      <text class="tip-text">系统管理</text>
+      <text class="tip-desc">功能开发中...</text>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitleText}}</text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <block wx:if="{{adminDataType==='user'}}">
+          <view wx:if="{{modalType==='detail'}}">
+            <view class="detail-item">
+              <text class="detail-label">用户名</text>
+              <text class="detail-value">{{currentItem.username}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">昵称/姓名</text>
+              <text class="detail-value">{{currentItem.nickName}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">用户类型</text>
+              <text class="detail-value">{{currentItem.userTypeLabel}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">联系电话</text>
+              <text class="detail-value">{{currentItem.contactPhone}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">联系邮箱</text>
+              <text class="detail-value">{{currentItem.contactEmail}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">状态</text>
+              <text class="detail-value">{{currentItem.statusLabel}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">注册时间</text>
+              <text class="detail-value">{{currentItem.createTime}}</text>
+            </view>
+          </view>
+          <view wx:if="{{modalType==='create' || modalType==='edit'}}">
+            <view class="form-item">
+              <text class="form-label">用户名</text>
+              <input class="form-input" placeholder="请输入用户名" value="{{formData.username}}" data-field="username" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">真实姓名</text>
+              <input class="form-input" placeholder="请输入真实姓名" value="{{formData.realName}}" data-field="realName" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">联系电话</text>
+              <input class="form-input" placeholder="请输入联系电话" value="{{formData.contactPhone}}" data-field="contactPhone" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">联系邮箱</text>
+              <input class="form-input" placeholder="请输入联系邮箱" value="{{formData.contactEmail}}" data-field="contactEmail" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">状态</text>
+              <switch checked="{{formData.status===1}}" bindchange="onStatusChange"/>
+            </view>
+          </view>
+        </block>
+        <block wx:if="{{adminDataType==='patent'}}">
+          <view wx:if="{{modalType==='detail'}}">
+            <view class="detail-item">
+              <text class="detail-label">专利号</text>
+              <text class="detail-value">{{currentItem.patentId}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">专利名称</text>
+              <text class="detail-value">{{currentItem.title}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">申请人</text>
+              <text class="detail-value">{{currentItem.applicant}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">发明人</text>
+              <text class="detail-value">{{currentItem.inventors}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">专利类型</text>
+              <text class="detail-value">{{currentItem.patentType}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">法律状态</text>
+              <text class="detail-value">{{currentItem.legalStatus}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">有效性</text>
+              <text class="detail-value">{{currentItem.validity}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">申请日</text>
+              <text class="detail-value">{{currentItem.applicationDate}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">摘要</text>
+              <text class="detail-value">{{currentItem.abstractText}}</text>
+            </view>
+          </view>
+          <view wx:if="{{modalType==='create' || modalType==='edit'}}">
+            <view class="form-item">
+              <text class="form-label">专利名称</text>
+              <input class="form-input" placeholder="请输入专利名称" value="{{formData.title}}" data-field="title" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">申请人</text>
+              <input class="form-input" placeholder="请输入申请人" value="{{formData.applicant}}" data-field="applicant" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">发明人</text>
+              <input class="form-input" placeholder="请输入发明人" value="{{formData.inventors}}" data-field="inventors" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">专利类型</text>
+              <input class="form-input" placeholder="请输入专利类型" value="{{formData.patentType}}" data-field="patentType" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">法律状态</text>
+              <input class="form-input" placeholder="请输入法律状态" value="{{formData.legalStatus}}" data-field="legalStatus" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">有效性</text>
+              <input class="form-input" placeholder="请输入有效性" value="{{formData.validity}}" data-field="validity" bindinput="onInputChange"/>
+            </view>
+            <view class="form-item">
+              <text class="form-label">摘要</text>
+              <textarea class="form-textarea" placeholder="请输入专利摘要" value="{{formData.abstractText}}" data-field="abstractText" bindinput="onInputChange"/>
+            </view>
+          </view>
+        </block>
+        <!-- 角色权限详情 -->
+        <block wx:if="{{adminDataType==='role' && modalType==='permission'}}">
+          <view class="permission-grid">
+            <view class="permission-item {{item.value?'active':''}}" wx:for="{{rolePermissionList}}" wx:key="key">
+              <text class="permission-label">{{item.label}}</text>
+              <text class="permission-status">{{item.value?'已授权':'未授权'}}</text>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeModal">取消</button>
+        <button class="btn-confirm" wx:if="{{modalType==='create' || modalType==='edit'}}" bindtap="submitForm">{{modalButtonText}}</button>
+      </view>
+    </view>
+  </view>
+</view>
+

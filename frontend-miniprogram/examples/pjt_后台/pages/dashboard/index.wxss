@@ -1,0 +1,111 @@
+.analysis-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+/* 表格滚动容器 */
+.table-scroll {
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: 20rpx;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #409eff #f0f2f5;
+}
+
+/* 自定义滚动条样式 */
+.table-scroll::-webkit-scrollbar {
+  height: 8rpx;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: #f0f2f5;
+  border-radius: 4rpx;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: #409eff;
+  border-radius: 4rpx;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #66b1ff;
+}
+
+/* 表格样式 */
+.table {
+  display: table;
+  min-width: 100%;
+  background-color: white;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.06);
+}
+
+.table-header {
+  display: table-row;
+  background-color: #f5f7fa;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  display: table-cell;
+  font-size: 24rpx;
+  padding: 20rpx 16rpx;
+  border-bottom: 2rpx solid #f0f2f5;
+  vertical-align: middle;
+}
+
+/* 排名列 */
+.rank-cell {
+  width: 80rpx;
+  text-align: center;
+  color: #409eff;
+  font-weight: 600;
+}
+
+/* 技术领域列 */
+.field-cell {
+  width: 200rpx;
+  color: #303133;
+}
+
+/* 搜索次数列 */
+.count-cell {
+  width: 120rpx;
+  text-align: center;
+  color: #606266;
+}
+
+/* 专利名称列 */
+.title-cell {
+  width: 400rpx;
+  color: #303133;
+  white-space: normal;
+  word-break: break-all;
+  vertical-align: top;
+  padding-top: 20rpx;
+}
+
+/* 浏览次数列 */
+.views-cell {
+  width: 120rpx;
+  text-align: center;
+  color: #606266;
+}
+
+/* 表头样式 */
+.table-header .table-cell {
+  font-weight: 600;
+  color: #606266;
+  border-bottom: 2rpx solid #e4e7ed;
+  background-color: #f5f7fa;
+}

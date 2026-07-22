@@ -1,0 +1,82 @@
+<view class="container">
+  <view class="card">
+    <view class="title">数据看板</view>
+    
+    <!-- 今日关键指标 -->
+    <view class="stats-container">
+      <view class="stat-item">
+        <view class="stat-value">{{ todayActiveUsers }}</view>
+        <view class="stat-label">今日活跃用户数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{ todayNewPatents }}</view>
+        <view class="stat-label">新增专利数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{ todayMatchConversations }}</view>
+        <view class="stat-label">匹配对话次数</view>
+      </view>
+    </view>
+    
+    <!-- 核心指标 -->
+    <view class="subtitle">核心指标</view>
+    <view class="stats-container">
+      <view class="stat-item">
+        <view class="stat-label">专利匹配成功率</view>
+        <view class="stat-value">{{ patentMatchRate }}%</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-label">意向转化率</view>
+        <view class="stat-value">{{ intentionConversionRate }}%</view>
+      </view>
+    </view>
+    
+    <!-- 用户增长趋势图 -->
+    <view class="subtitle">用户增长趋势</view>
+    <view class="chart-container">
+      <canvas id="userGrowthChart" canvas-id="userGrowthChart" style="width: 100%; height: 100%;"></canvas>
+    </view>
+    
+    <!-- 热门分析 -->
+    <view class="subtitle">热门分析</view>
+    <view class="analysis-container">
+      <!-- 高频搜索技术领域Top10 -->
+      <view class="card">
+        <view class="subtitle">高频搜索技术领域Top10</view>
+        <scroll-view class="table-scroll" scroll-x="true">
+          <view class="table">
+            <view class="table-header">
+              <view class="table-cell rank-cell">排名</view>
+              <view class="table-cell field-cell">技术领域</view>
+              <view class="table-cell count-cell">搜索次数</view>
+            </view>
+            <view class="table-row" wx:for="{{ hotTechFields }}" wx:key="rank">
+              <view class="table-cell rank-cell">{{ item.rank }}</view>
+              <view class="table-cell field-cell">{{ item.field }}</view>
+              <view class="table-cell count-cell">{{ item.count }}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      
+      <!-- 热门专利Top10 -->
+      <view class="card">
+        <view class="subtitle">热门专利Top10</view>
+        <scroll-view class="table-scroll" scroll-x="true">
+          <view class="table">
+            <view class="table-header">
+              <view class="table-cell rank-cell">排名</view>
+              <view class="table-cell title-cell">专利名称</view>
+              <view class="table-cell views-cell">浏览次数</view>
+            </view>
+            <view class="table-row" wx:for="{{ hotPatents }}" wx:key="rank">
+              <view class="table-cell rank-cell">{{ item.rank }}</view>
+              <view class="table-cell title-cell">{{ item.title }}</view>
+              <view class="table-cell views-cell">{{ item.views }}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+</view>

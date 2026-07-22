@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/profile/profile",
+    "pages/settings/settings",
+    "pages/identity-select/identity-select",
+    "pages/enterprise-bind/enterprise-bind",
+    "pages/research-bind/research-bind",
+    "pages/patent-assistant/patent-assistant",
+    "pages/patent-detail/patent-detail",
+    "pages/patent-list/patent-list",
+    "pages/patent-select/patent-select",
+    "pages/patent-manage/patent-manage",
+    "pages/research-team/research-team",
+    "pages/dashboard/dashboard",
+    "pages/content-audit/content-audit",
+    "pages/admin-management/admin-management"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "专利平台",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "账户中心"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,107 @@
+<view class="settings-container">
+  
+  <view wx:if="{{userType === 0}}">
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToIdentitySelect">
+        <view class="item-left">
+          <text class="item-icon">🔐</text>
+          <text class="item-text">身份绑定</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{userType === 1}}">
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToViewEnterprise">
+        <view class="item-left">
+          <text class="item-icon">🏭</text>
+          <text class="item-text">企业信息</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToEditEnterprise">
+        <view class="item-left">
+          <text class="item-icon">✏️</text>
+          <text class="item-text">更新企业信息</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+
+    <view class="setting-group">
+      <view class="setting-item" bindtap="doUnbindEnterprise">
+        <view class="item-left">
+          <text class="item-icon" style="color:#fa5151">🚪</text>
+          <text class="item-text" style="color:#fa5151">注销企业身份</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="tip-box">
+      <text class="tip-text">温馨提示：注销企业身份后，您的账号将恢复为普通用户类型</text>
+    </view>
+  </view>
+
+  <view wx:if="{{userType === 2}}">
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToViewResearch">
+        <view class="item-left">
+          <text class="item-icon">👥</text>
+          <text class="item-text">科研团队信息</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToEditResearch">
+        <view class="item-left">
+          <text class="item-icon">✏️</text>
+          <text class="item-text">更新科研团队信息</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+
+    <view class="setting-group">
+      <view class="setting-item" bindtap="goToPatentManage">
+        <view class="item-left">
+          <text class="item-icon">📋</text>
+          <text class="item-text">专利管理</text>
+        </view>
+        <image class="arrow-icon" src="/images/arrow-right.png"></image>
+      </view>
+    </view>
+
+    <view class="setting-group">
+      <view class="setting-item" bindtap="doUnbindResearch">
+        <view class="item-left">
+          <text class="item-icon" style="color:#fa5151">🚪</text>
+          <text class="item-text" style="color:#fa5151">注销科研团队身份</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="tip-box">
+      <text class="tip-text">温馨提示：注销科研团队身份后，您的账号将恢复为普通用户类型</text>
+    </view>
+  </view>
+
+  <view wx:if="{{userType === 3}}">
+    <view class="setting-group">
+      <view class="setting-item">
+        <view class="item-left">
+          <text class="item-icon">⚙️</text>
+          <text class="item-text">系统管理员</text>
+        </view>
+        <text class="status-tag admin">已认证</text>
+      </view>
+    </view>
+  </view>
+
+</view>

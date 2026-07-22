@@ -1,0 +1,19 @@
+<view class="container">
+  <view class="tip-text">请选择要绑定的身份类型</view>
+  
+  <view class="card-list">
+    <view class="card-item enterprise" bindtap="goToEnterpriseBind">
+      <view class="card-icon">🏭</view>
+      <view class="card-title">绑定企业身份</view>
+      <view class="card-desc">绑定后享有企业用户专属功能与服务</view>
+      <view class="card-arrow">→</view>
+    </view>
+
+    <view class="card-item research" bindtap="goToResearchBind">
+      <view class="card-icon">👥</view>
+      <view class="card-title">绑定科研团队</view>
+      <view class="card-desc">绑定科研团队身份，使用相关科研功能</view>
+      <view class="card-arrow">→</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,102 @@
+<scroll-view class="container" scroll-y enhanced>
+  <view wx:if="{{loading}}" class="loading-box">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view wx:if="{{patent}}" class="content">
+    <view class="header-card">
+      <text class="patent-name">{{patent.title || '-'}}</text>
+      <view class="meta-row">
+        <text class="meta-item" wx:if="{{patent.patentType}}">类型: {{patent.patentType}}</text>
+        <text class="meta-item" wx:if="{{patent.legalStatus}}">状态: {{patent.legalStatus}}</text>
+        <text class="meta-item" wx:if="{{patent.validity}}">有效性: {{patent.validity}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-item-right" wx:if="{{patent.applicationDate}}">申请日: {{patent.applicationDate}}</text>
+      </view>
+    </view>
+
+    <view class="section-card" wx:if="{{patent.techFieldList && patent.techFieldList.length > 0}}">
+      <text class="section-title">技术领域</text>
+      <view class="tech-field-tags">
+        <text class="tech-field-tag" wx:for="{{patent.techFieldList}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="section-card" wx:if="{{patent.abstractText !== undefined && patent.abstractText !== null && patent.abstractText !== ''}}">
+      <text class="section-title">摘要</text>
+      <text class="abstract-text">{{patent.abstractText}}</text>
+    </view>
+
+    <view class="section-card" wx:if="{{patent.technicalEffectSentences}}">
+      <text class="section-title">技术效果</text>
+      <text class="abstract-text">{{patent.technicalEffectSentences}}</text>
+    </view>
+
+    <view class="section-card">
+      <text class="section-title">基本信息</text>
+      <view class="info-grid">
+        <view class="info-row">
+          <text class="info-label">发明人</text>
+          <text class="info-value">{{patent.inventors || '-'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">申请人</text>
+          <text class="info-value">{{patent.applicant || '-'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">当前权利人</text>
+          <text class="info-value">{{patent.currentOwner || '-'}}</text>
+        </view>
+        <view class="info-row" wx:if="{{patent.publicationDate}}">
+          <text class="info-label">公开日</text>
+          <text class="info-value">{{patent.publicationDate}}</text>
+        </view>
+        <view class="info-row" wx:if="{{patent.grantDate}}">
+          <text class="info-label">授权日</text>
+          <text class="info-value">{{patent.grantDate}}</text>
+        </view>
+        <view class="info-row" wx:if="{{patent.estimatedExpiryDate}}">
+          <text class="info-label">预计到期日</text>
+          <text class="info-value">{{patent.estimatedExpiryDate}}</text>
+        </view>
+        <view class="info-row" wx:if="{{patent.technicalStability}}">
+          <text class="info-label">技术稳定性</text>
+          <text class="info-value">{{patent.technicalStability}}/10</text>
+        </view>
+        <view class="info-row" wx:if="{{patent.technicalAdvancement}}">
+          <text class="info-label">技术先进性</text>
+          <text class="info-value">{{patent.technicalAdvancement}}/10</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card" wx:if="{{patent.sourceLink}}">
+      <text class="section-title">来源链接</text>
+      <view class="source-link-container">
+        <text class="source-link" bindlongpress="onCopyLink" data-link="{{patent.sourceLink}}">{{patent.sourceLink}}</text>
+        <text class="copy-hint">长按可复制链接</text>
+      </view>
+    </view>
+
+    <view class="section-card" wx:if="{{patent.viewCount !== undefined || patent.searchCount !== undefined || patent.clickCount !== undefined}}">
+      <text class="section-title">统计信息</text>
+      <view class="stats-row">
+        <view class="stat-item" wx:if="{{patent.searchCount !== undefined}}">
+          <text class="stat-value">{{patent.searchCount || 0}}</text>
+          <text class="stat-label">搜索</text>
+        </view>
+        <view class="stat-item" wx:if="{{patent.viewCount !== undefined}}">
+          <text class="stat-value">{{patent.viewCount || 0}}</text>
+          <text class="stat-label">浏览</text>
+        </view>
+        <view class="stat-item" wx:if="{{patent.clickCount !== undefined}}">
+          <text class="stat-value">{{patent.clickCount || 0}}</text>
+          <text class="stat-label">点击</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 30px"></view>
+  </view>
+</scroll-view>

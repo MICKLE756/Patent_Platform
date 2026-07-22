@@ -1,0 +1,103 @@
+.container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.tip-box {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.tip-text {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.required {
+  color: #fa5151;
+}
+
+.form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 10px 16px 20px;
+  margin-bottom: 20px;
+}
+
+.form-item {
+  margin-top: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 0 14px;
+  height: 44px;
+  line-height: 44px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-textarea {
+  min-height: 80px;
+  padding: 12px 14px;
+  line-height: 1.6;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #07c160;
+  color: white;
+  border-radius: 10px;
+  font-size: 16px;
+  height: 48px;
+  line-height: 48px;
+  border: none;
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn[disabled] {
+  background: #b8e5c6;
+  color: #83d29f;
+}
+
+.info-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.info-item {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #999;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+  line-height: 1.5;
+}

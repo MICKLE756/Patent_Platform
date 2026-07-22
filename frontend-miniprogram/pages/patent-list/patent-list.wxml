@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="search-area">
+    <view class="search-bar">
+      <input 
+        class="search-input" 
+        placeholder="关键词（标题/摘要/发明人）" 
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        confirm-type="search"
+        bindconfirm="onKeywordConfirm"
+      />
+      <button class="search-btn" bindtap="onSearch">搜索</button>
+    </view>
+  </view>
+
+  <scroll-view class="result-list" scroll-y>
+    <view wx:if="{{loading}}" class="loading-box">
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <block wx:elif="{{resultList.length === 0}}">
+      <view class="empty-box">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">暂无专利数据</text>
+      </view>
+    </block>
+    
+    <block wx:else>
+      <view class="result-item" wx:for="{{resultList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="item-header">
+          <text class="patent-title">{{item.patentName || item.title || '-'}}</text>
+        </view>
+        <view class="item-tags">
+          <text wx:if="{{item.inventor}}" class="tag">发明人: {{item.inventor}}</text>
+          <text wx:if="{{item.applicant}}" class="tag">申请人: {{item.applicant}}</text>
+        </view>
+        <view class="item-footer">
+          <text wx:if="{{item.applicationDate}}" class="year">{{item.applicationDate}}</text>
+        </view>
+      </view>
+    </block>
+    
+    <view wx:if="{{loadingMore}}" class="loading-more">
+      <text class="loading-text">加载中...</text>
+    </view>
+  </scroll-view>
+</view>
