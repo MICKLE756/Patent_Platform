@@ -27,6 +27,22 @@ PER_QUERY_TOP_K = int(os.getenv("RECOMMEND_PER_QUERY_TOP_K", "10"))
 # 合成候选查询上限
 MAX_QUERIES = int(os.getenv("RECOMMEND_MAX_QUERIES", "3"))
 
+# ==================== 主动推荐参数 ====================
+# 「新收录专利」判定窗口（天），主动对话与热点推送共用
+PROACTIVE_NEW_PATENT_DAYS = int(os.getenv("PROACTIVE_NEW_PATENT_DAYS", "30"))
+# 浏览量达到该阈值判定为「热度高」
+PROACTIVE_HOT_VIEW_THRESHOLD = int(os.getenv("PROACTIVE_HOT_VIEW_THRESHOLD", "100"))
+# 热点候选池大小（先取全平台 Top-N 热点，再与用户兴趣匹配）
+PROACTIVE_HOT_POOL_SIZE = int(os.getenv("PROACTIVE_HOT_POOL_SIZE", "50"))
+# 画像与专利的最低匹配分（低于该分不触达，避免打扰）
+PROACTIVE_MIN_MATCH_SCORE = float(os.getenv("PROACTIVE_MIN_MATCH_SCORE", "1.0"))
+# 主动对话每次携带的专利条数
+PROACTIVE_CONVERSATION_TOP_K = int(os.getenv("PROACTIVE_CONVERSATION_TOP_K", "3"))
+# 热点推送单用户单次条数上限
+PROACTIVE_MAX_PUSH_PER_USER = int(os.getenv("PROACTIVE_MAX_PUSH_PER_USER", "5"))
+# 企业需求推广：每条需求检索的专利条数
+PROACTIVE_PROMOTE_TOP_K = int(os.getenv("PROACTIVE_PROMOTE_TOP_K", "5"))
+
 # ==================== 专利数据 (本地兜底) ====================
 # 默认复用 agent-service 的 milvus.json，可通过 PATENT_DATA_PATH 覆盖
 _DEFAULT_DATA_PATH = BASE_DIR.parent / "agent-service" / "milvus.json"

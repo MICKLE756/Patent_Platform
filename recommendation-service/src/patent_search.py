@@ -108,6 +108,7 @@ class PatentSearchService:
             core_problem=core_problem,
             constraints=constraints,
             filters=filters,
+            query=query,
             top_k=top_k,
         )
 
@@ -167,13 +168,18 @@ class PatentSearchService:
         core_problem: str = "",
         constraints: Optional[dict] = None,
         filters: Optional[dict] = None,
+        query: str = "",
         top_k: int = 10,
     ) -> list:
-        """本地硬过滤 + 关键词评分检索，返回最多 ``top_k`` 条专利。"""
+        """本地硬过滤 + 关键词评分检索，返回最多 ``top_k`` 条专利。
+
+        命中评分的结果附带归一化 ``final_score``（命中关键词数 / 关键词总数），
+        与远程检索结果的字段对齐；无命中时退回的候选集不带 ``final_score``。
+        """
         constraints = constraints or {}
         candidates = self._apply_filters(self.patents, filters or {})
 
-        keywords = self._collect_keywords(tech_domain, core_problem, constraints)
+        keywords = self._collect_keywords(tech_domain, core_problem, constraints, query)
         if not keywords:
             return candidates[:top_k]
 
@@ -184,7 +190,10 @@ class PatentSearchService:
                 scored.append((score, patent))
 
         scored.sort(key=lambda x: x[0], reverse=True)
-        results = [p for _, p in scored[:top_k]]
+        results = [
+            {**patent, "final_score": round(score / len(keywords), 3)}
+            for score, patent in scored[:top_k]
+        ]
 
         # 关键词无命中时退回过滤后的候选集，避免空结果
         return results or candidates[:top_k]
@@ -224,13 +233,17 @@ class PatentSearchService:
         return filtered if filtered else patents
 
     @staticmethod
-    def _collect_keywords(tech_domain: str, core_problem: str, constraints: dict) -> list:
-        """收集用于评分的关键词（技术领域 + 核心问题 + 字符串型约束值）。"""
+    def _collect_keywords(
+        tech_domain: str, core_problem: str, constraints: dict, query: str = ""
+    ) -> list:
+        """收集用于评分的关键词（技术领域 + 核心问题 + 查询词 + 字符串型约束值）。"""
         keywords: list = []
         if tech_domain:
             keywords.extend(tech_domain.replace("、", " ").split())
         if core_problem:
             keywords.extend(core_problem.replace("、", " ").split())
+        if query:
+            keywords.extend(query.replace("、", " ").split())
         for value in constraints.values():
             if isinstance(value, str):
                 keywords.append(value)
