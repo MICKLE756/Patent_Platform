@@ -276,6 +276,32 @@ def test_promotion_no_results_degraded(service):
     assert result["degraded"] is True
 
 
+def test_promotion_skips_zero_score_patents():
+    """本地检索无命中退回的候选（无 final_score）不向专利权人推广。"""
+    fake = FakeSearchService(results={
+        "耐高温涂层": [
+            {**COATING_PATENT, "final_score": 0.9},
+            BATTERY_PATENT,  # 退回候选，无 final_score
+        ],
+    })
+    service = ProactiveService(fake)
+    result = service.promote_to_owners(demands=[DEMAND])
+    owners = [p["owner"] for p in result["promotions"]]
+    assert owners == ["华涂新材料股份有限公司"]
+
+
+def test_local_search_uses_query_keywords_and_scores():
+    """_local_search 应使用 query 关键词评分并附带归一化 final_score。"""
+    from patent_search import PatentSearchService
+
+    service = PatentSearchService(patents=ALL_PATENTS)
+    results = service.search(query="仪表板 检测", top_k=2)
+    assert results  # query 命中
+    assert results[0]["final_score"] > 0
+    scores = [r["final_score"] for r in results]
+    assert scores == sorted(scores, reverse=True)
+
+
 # ==================== 4. FastAPI 端点与鉴权 ====================
 
 @pytest.fixture

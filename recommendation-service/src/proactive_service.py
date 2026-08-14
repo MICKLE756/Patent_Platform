@@ -355,9 +355,12 @@ class ProactiveService:
                 owner = self._patent_owner(patent)
                 if not owner:
                     continue
+                score = round(float(patent.get("final_score", 0.0) or 0.0), 3)
+                # 零分即与需求无关（本地检索无命中时的退回候选），不向权利人推广
+                if score <= 0:
+                    continue
                 card = _patent_card(patent)
-                card["match_score"] = round(
-                    float(patent.get("final_score", 0.0) or 0.0), 3)
+                card["match_score"] = score
                 by_owner.setdefault(owner, []).append(card)
 
             for owner, cards in by_owner.items():
