@@ -16,9 +16,11 @@ agent 保持无状态：只认后端传入的 user_id 与画像，不做用户�
 """
 
 import logging
+from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 import config
@@ -34,6 +36,15 @@ app = FastAPI(title="Patent Recommendation Service")
 
 _recommendation_service = RecommendationService()
 _proactive_service = ProactiveService()
+
+
+_STATIC_DIR = Path(__file__).parent / "static"
+
+
+@app.get("/demo", include_in_schema=False)
+async def demo_page():
+    """三个主动触达接口的可视化演示页（本地开发用）。"""
+    return FileResponse(_STATIC_DIR / "demo.html", media_type="text/html")
 
 
 def _check_service_token(token: str | None) -> None:

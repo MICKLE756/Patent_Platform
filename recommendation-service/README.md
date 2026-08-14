@@ -163,6 +163,14 @@ retrieval-service /retrieve/search（失败回退本地 milvus.json）
 
 存活探针，返回 `{"status": "ok"}`。
 
+### `GET /demo`
+
+三个主动触达接口的可视化演示页（本地开发用）。服务启动后浏览器打开
+`http://localhost:8090/demo`，三个 Tab 分别对应主动对话 / 热点推送 /
+企业需求推广：左侧可编辑请求 JSON 并发送，右侧以卡片形式展示开场白、
+推送理由、推广文案与专利卡片，可展开查看原始 JSON 响应。配置了
+`SERVICE_TOKEN` 时在页面顶部填入 `x-service-token` 即可。
+
 ## 运行
 
 ```bash

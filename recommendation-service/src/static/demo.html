@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>主动触达演示 · recommendation-service</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280;
+    --bg: #f9fafb;
+    --hot: #dc2626;
+    --new: #059669;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); }
+  header { background: #fff; border-bottom: 1px solid var(--border); padding: 16px 24px; }
+  header h1 { font-size: 18px; }
+  header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .token-bar { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .token-bar input { flex: 0 0 320px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+  .tabs { display: flex; gap: 4px; padding: 12px 24px 0; background: #fff; border-bottom: 1px solid var(--border); }
+  .tab { padding: 10px 18px; border: 1px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0;
+         cursor: pointer; font-size: 14px; color: var(--muted); }
+  .tab.active { background: var(--primary-light); color: var(--primary); border-color: var(--border); font-weight: 600; }
+  main { display: grid; grid-template-columns: 440px 1fr; gap: 16px; padding: 16px 24px; align-items: start; }
+  .panel { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .panel h2 { font-size: 14px; margin-bottom: 8px; }
+  .panel .desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+  textarea { width: 100%; height: 380px; font-family: Consolas, monospace; font-size: 12px; padding: 10px;
+             border: 1px solid var(--border); border-radius: 8px; resize: vertical; }
+  .btn { margin-top: 10px; padding: 8px 22px; background: var(--primary); color: #fff; border: none;
+         border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .btn:disabled { opacity: .5; cursor: wait; }
+  .status { display: inline-block; margin-left: 10px; font-size: 13px; color: var(--muted); }
+  .status.err { color: var(--hot); }
+  .empty { color: var(--muted); font-size: 13px; padding: 30px 0; text-align: center; }
+  .conv-card, .push-card, .promo-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .who { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .who b { color: var(--text); }
+  .bubble { background: var(--primary-light); border-radius: 4px 14px 14px 14px; padding: 12px 14px;
+            font-size: 14px; line-height: 1.7; margin-bottom: 10px; }
+  .promo-card .bubble { background: #fefce8; }
+  .patent { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 8px; background: var(--bg); }
+  .patent .title { font-size: 14px; font-weight: 600; }
+  .patent .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .patent .reason { font-size: 12px; color: var(--primary); margin-top: 4px; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; color: #fff; margin-right: 6px; vertical-align: 2px; }
+  .badge.hot { background: var(--hot); }
+  .badge.new { background: var(--new); }
+  .score { float: right; font-size: 12px; color: var(--muted); }
+  details { margin-top: 6px; }
+  details summary { font-size: 12px; color: var(--muted); cursor: pointer; }
+  details pre { font-size: 11px; background: #111827; color: #d1fae5; padding: 10px; border-radius: 8px;
+                overflow: auto; max-height: 320px; margin-top: 6px; }
+  .degraded { background: #fef2f2; border: 1px solid #fecaca; color: var(--hot); font-size: 13px;
+              border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>专利主动触达 · 可视化演示</h1>
+  <p>三个内部接口的交互演示：修改左侧请求 JSON，点击发送，右侧以卡片形式展示触达结果。</p>
+  <div class="token-bar">
+    <label style="font-size:13px;color:var(--muted)">x-service-token（未配置 SERVICE_TOKEN 时留空）</label>
+    <input id="token" type="password" placeholder="留空 = 本地开发免鉴权">
+  </div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main>
+  <div class="panel">
+    <h2 id="req-title"></h2>
+    <div class="desc" id="req-desc"></div>
+    <textarea id="req-body" spellcheck="false"></textarea>
+    <button class="btn" id="send">发送请求</button>
+    <span class="status" id="status"></span>
+  </div>
+  <div class="panel">
+    <h2>触达结果</h2>
+    <div id="result"><div class="empty">尚未发送请求</div></div>
+  </div>
+</main>
+
+<script>
+const SCENES = {
+  conversations: {
+    label: "1 · 主动发起对话",
+    path: "/internal/v1/proactive/conversations",
+    desc: "根据用户对话历史/兴趣画像匹配新出现的专利，为每个用户生成一条主动对话（开场白 + 专利卡片）。空画像用户不触达。",
+    sample: {
+      users: [
+        { user_id: "u1", profile: {
+            chat_queries: ["我想找汽车零件检测相关的专利"],
+            keywords: [{ keyword: "检测", weight: 1.0 }],
+            slots: { tech_field: "汽车检测" } } },
+        { user_id: "u2", profile: {} }
+      ],
+      new_patents: [
+        { patent_id: "CN202520842474.4", title: "一种汽车仪表板横梁零件检测检具",
+          tech_field: "以机械技术为特征的测量装置；仪器仪表设备制造",
+          chunk_text: "一种汽车仪表板横梁零件检测检具；涉及汽车仪表板检测设备技术领域",
+          publish_date: "TODAY" },
+        { patent_id: "CN202521040914.0", title: "一种汽车板簧弧度检测结构",
+          tech_field: "用于计量轮廓或曲率；仪器仪表设备制造",
+          chunk_text: "一种汽车板簧弧度检测结构；提供板簧弧度检测",
+          publish_date: "TODAY" }
+      ],
+      top_k: 3
+    },
+    render(data) {
+      if (!data.conversations?.length) return empty("没有生成任何主动对话（用户画像为空或没有匹配的新专利）");
+      return data.conversations.map(c => `
+        <div class="conv-card">
+          <div class="who">发给用户 <b>${esc(c.user_id)}</b> · 触发原因：${esc(c.trigger)}</div>
+          <div class="bubble">🤖 ${esc(c.opening_message)}</div>
+          ${(c.patents || []).map(patentCard).join("")}
+        </div>`).join("");
+    }
+  },
+  "hot-patents": {
+    label: "2 · 热点/新专利推送",
+    path: "/internal/v1/proactive/hot-patents",
+    desc: "浏览量达到阈值的专利判定为「技术热点」，近 30 天发布的判定为「新收录」，只推送给兴趣相关的用户。",
+    sample: {
+      users: [
+        { user_id: "u1", profile: { keywords: [{ keyword: "检测", weight: 1.0 }] } },
+        { user_id: "u3", profile: { keywords: [{ keyword: "基因编辑", weight: 1.0 }] } }
+      ],
+      patent_stats: [
+        { patent_id: "CN202520842474.4", view_count: 320 }
+      ],
+      top_k: 5
+    },
+    render(data) {
+      if (!data.pushes?.length) return empty("没有可推送的用户（无热点/新专利，或与用户兴趣不相关）");
+      return data.pushes.map(p => `
+        <div class="push-card">
+          <div class="who">推送给用户 <b>${esc(p.user_id)}</b></div>
+          ${(p.items || []).map(it => patentCard(it, it.push_type)).join("")}
+        </div>`).join("");
+    }
+  },
+  "enterprise-demands": {
+    label: "3 · 企业需求推广",
+    path: "/internal/v1/proactive/enterprise-demands",
+    desc: "根据企业技术需求检索匹配专利，按专利权人聚合，为每位权利人生成一条推广触达消息。",
+    sample: {
+      demands: [
+        { enterprise_id: "e100", enterprise_name: "长风汽车制造有限公司",
+          demand: { tech_field: "汽车检测", core_problem: "仪表板横梁零件检测精度不足",
+                    keywords: ["仪表板", "检测检具"], constraints: {} } }
+      ],
+      top_k: 5
+    },
+    render(data) {
+      if (!data.promotions?.length) return empty("没有匹配到可推广的专利权人");
+      return data.promotions.map(p => `
+        <div class="promo-card">
+          <div class="who">发给专利权人 <b>${esc(p.owner)}</b> · 来自企业「${esc(p.enterprise_name)}」的需求：${esc(p.demand_summary)}</div>
+          <div class="bubble">📣 ${esc(p.message)}</div>
+          ${(p.patents || []).map(patentCard).join("")}
+        </div>`).join("");
+    }
+  }
+};
+
+let current = "conversations";
+const $ = id => document.getElementById(id);
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+function empty(msg) { return `<div class="empty">${esc(msg)}</div>`; }
+
+function patentCard(p, pushType) {
+  const badge = pushType === "hot" ? `<span class="badge hot">热点</span>`
+              : pushType === "new" ? `<span class="badge new">新收录</span>` : "";
+  const score = p.match_score != null ? `<span class="score">匹配分 ${p.match_score}</span>` : "";
+  return `<div class="patent">
+      <div class="title">${badge}《${esc(p.title)}》${score}</div>
+      <div class="meta">${esc(p.patent_id)}${p.publish_date ? " · " + esc(p.publish_date) : ""}</div>
+      ${p.tech_field ? `<div class="meta">${esc(p.tech_field)}</div>` : ""}
+      ${p.reason ? `<div class="reason">💡 ${esc(p.reason)}</div>` : ""}
+    </div>`;
+}
+
+function loadScene(key) {
+  current = key;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.key === key));
+  const s = SCENES[key];
+  $("req-title").textContent = "POST " + s.path;
+  $("req-desc").textContent = s.desc;
+  const sample = JSON.parse(JSON.stringify(s.sample).replaceAll("TODAY", new Date().toISOString().slice(0, 10)));
+  $("req-body").value = JSON.stringify(sample, null, 2);
+  $("result").innerHTML = empty("尚未发送请求");
+  $("status").textContent = "";
+}
+
+async function send() {
+  const s = SCENES[current];
+  let payload;
+  try { payload = JSON.parse($("req-body").value); }
+  catch (e) { $("status").textContent = "请求 JSON 格式错误：" + e.message; $("status").className = "status err"; return; }
+  $("send").disabled = true;
+  $("status").textContent = "请求中…"; $("status").className = "status";
+  try {
+    const headers = { "Content-Type": "application/json" };
+    const tok = $("token").value.trim();
+    if (tok) headers["x-service-token"] = tok;
+    const t0 = performance.now();
+    const resp = await fetch(s.path, { method: "POST", headers, body: JSON.stringify(payload) });
+    const data = await resp.json();
+    const ms = Math.round(performance.now() - t0);
+    if (!resp.ok) {
+      $("status").textContent = `HTTP ${resp.status}`; $("status").className = "status err";
+      $("result").innerHTML = empty(`请求失败（HTTP ${resp.status}）：${JSON.stringify(data)}`);
+      return;
+    }
+    $("status").textContent = `HTTP 200 · ${ms}ms`;
+    $("result").innerHTML =
+      (data.degraded ? `<div class="degraded">⚠ degraded=true：候选不足或检索降级，结果可能不完整</div>` : "") +
+      s.render(data) +
+      `<details><summary>查看原始 JSON 响应</summary><pre>${esc(JSON.stringify(data, null, 2))}</pre></details>`;
+  } catch (e) {
+    $("status").textContent = "请求异常：" + e.message; $("status").className = "status err";
+  } finally {
+    $("send").disabled = false;
+  }
+}
+
+$("tabs").innerHTML = Object.entries(SCENES).map(([k, s]) =>
+  `<div class="tab" data-key="${k}">${s.label}</div>`).join("");
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => loadScene(t.dataset.key)));
+$("send").addEventListener("click", send);
+loadScene(current);
+</script>
+</body>
+</html>
