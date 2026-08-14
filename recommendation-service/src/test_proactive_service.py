@@ -295,9 +295,10 @@ def test_local_search_uses_query_keywords_and_scores():
     from patent_search import PatentSearchService
 
     service = PatentSearchService(patents=ALL_PATENTS)
-    results = service.search(query="仪表板 检测", top_k=2)
+    results = service.search(query="涂层 环保", top_k=3)
     assert results  # query 命中
-    assert results[0]["final_score"] > 0
+    assert results[0]["patent_id"] == "CN100001"  # 两个词都命中，排最前
+    assert results[0]["final_score"] == 1.0
     scores = [r["final_score"] for r in results]
     assert scores == sorted(scores, reverse=True)
 
