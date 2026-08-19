@@ -278,16 +278,35 @@ python src/app.py            # 默认 0.0.0.0:8090
 | `PROACTIVE_MAX_PUSH_PER_USER` | 热点推送单用户条数上限 | 5 |
 | `PROACTIVE_PROMOTE_TOP_K` | 每条企业需求检索的专利条数 | 5 |
 
-## 测试
+## 模拟数据（mock_data/）
+
+`mock_data/` 提供成套虚拟数据，开箱即可对全部接口做手工/联调测试：
+
+| 文件 | 内容 |
+|---|---|
+| `mock_patents.json` | 20 件模拟专利（涂层/电池/检测/视觉/机器人/光伏/基因/无人机/医疗等，含新收录与历史专利、不同权利人） |
+| `mock_users.json` | 10 个模拟用户画像（不同兴趣领域、纯对话用户、已浏览用户、空画像新用户） |
+| `mock_patent_stats.json` | 专利浏览量统计（含超过/低于热点阈值的对照数据） |
+| `mock_enterprise_demands.json` | 6 条企业技术需求（检测/散热/涂层/光伏/骨科/农业） |
+| `send_mock_requests.py` | 用以上数据组装请求并调用全部接口的脚本 |
+| `requests/*.json` | 组装好的四个接口现成请求体（可直接粘到 `/demo` 页或 Postman） |
+
+使用方式：
 
 ```bash
-cd recommendation-service/src
-python -m pytest -v
+# 1.（可选）让本地检索也走模拟专利库，构成全模拟环境
+# （路径相对启动目录 src/，也可写绝对路径）
+echo "PATENT_DATA_PATH=../mock_data/mock_patents.json" >> recommendation-service/.env
+
+# 2. 启动服务
+cd recommendation-service/src && python app.py
+
+# 3. 另开终端，一键调用全部接口并打印结果摘要
+cd recommendation-service/mock_data && python send_mock_requests.py
+
+# 或只生成请求体文件（粘贴到 /demo 页面用）
+python send_mock_requests.py --save
 ```
 
-覆盖：空画像、纯关键词、纯聊天、混合、检索全空、检索故障降级、
-top_k 边界、已浏览专利排除、端点鉴权；主动触达三类场景（主动对话 /
-热点推送 / 企业需求推广）的命中、排除、降级与鉴权；LLM 启用条件、
-成功润色、失败/超时/响应异常静默回退模板、`message_source` 标记；
-静态触发点分发、多方消息与 `thread_id` 共享、Webhook 推送成功 /
-部分失败 / 全部失败不丢消息、未知触发点、触发端点鉴权。
+模拟数据设计了正反对照：空画像用户不触达、已浏览专利不重复推送、
+低于浏览量阈值的专利不进热点池、企业需求按权利人聚合并生成企业回执。

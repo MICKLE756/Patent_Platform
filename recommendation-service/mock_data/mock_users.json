@@ -1,0 +1,129 @@
+[
+  {
+    "user_id": "u1001",
+    "remark": "涂层材料工程师：检索+对话+浏览记录齐全",
+    "profile": {
+      "keywords": [
+        { "keyword": "耐高温涂层", "weight": 3.0 },
+        { "keyword": "环保涂料", "weight": 2.0 },
+        { "keyword": "喷涂工艺", "weight": 1.5 }
+      ],
+      "chat_queries": [
+        "我想找耐高温且环保的涂层材料专利",
+        "有没有汽车车身涂层喷涂工艺相关的专利"
+      ],
+      "slots": { "tech_field": "涂层材料", "core_problem": "提高耐高温性能并兼顾环保" },
+      "viewed_patent_ids": ["CN202310000015.6"]
+    }
+  },
+  {
+    "user_id": "u1002",
+    "remark": "新能源电池研发人员：关注锂电/钠电",
+    "profile": {
+      "keywords": [
+        { "keyword": "锂电池", "weight": 3.0 },
+        { "keyword": "热管理", "weight": 2.5 },
+        { "keyword": "钠离子电池", "weight": 2.0 }
+      ],
+      "chat_queries": ["帮我找锂电池热管理相关的专利", "钠离子电池负极材料有哪些新专利"],
+      "slots": { "tech_field": "电池技术", "core_problem": "电芯散热与安全" },
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1003",
+    "remark": "汽车质检主管：检具/在线检测",
+    "profile": {
+      "keywords": [
+        { "keyword": "零件检测", "weight": 3.0 },
+        { "keyword": "检具", "weight": 2.0 }
+      ],
+      "chat_queries": ["我想找汽车零件检测相关的专利"],
+      "slots": { "tech_field": "汽车检测", "core_problem": "提升零件检测精度和效率" },
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1004",
+    "remark": "机器视觉算法工程师",
+    "profile": {
+      "keywords": [
+        { "keyword": "机器视觉", "weight": 3.0 },
+        { "keyword": "缺陷检测", "weight": 2.5 },
+        { "keyword": "深度学习", "weight": 1.5 }
+      ],
+      "chat_queries": ["基于深度学习的表面缺陷检测有什么专利"],
+      "slots": { "tech_field": "机器视觉", "core_problem": "表面缺陷识别准确率" },
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1005",
+    "remark": "光伏行业投资分析师：只有对话历史",
+    "profile": {
+      "keywords": [],
+      "chat_queries": ["钙钛矿太阳能电池最近有什么高效率的新专利", "光伏封装可靠性"],
+      "slots": {},
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1006",
+    "remark": "生物医药研究员：基因编辑方向",
+    "profile": {
+      "keywords": [
+        { "keyword": "基因编辑", "weight": 3.0 },
+        { "keyword": "CRISPR", "weight": 2.5 }
+      ],
+      "chat_queries": ["CRISPR 脱靶检测相关专利"],
+      "slots": { "tech_field": "基因工程" },
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1007",
+    "remark": "已浏览过新专利的用户：验证去重不重复触达",
+    "profile": {
+      "keywords": [{ "keyword": "无人机", "weight": 3.0 }],
+      "chat_queries": ["无人机集群避障"],
+      "slots": { "tech_field": "无人机" },
+      "viewed_patent_ids": ["CN202610000009.9"]
+    }
+  },
+  {
+    "user_id": "u1008",
+    "remark": "空画像新用户：验证不打扰",
+    "profile": {
+      "keywords": [],
+      "chat_queries": [],
+      "slots": {},
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1009",
+    "remark": "医疗器械注册专员",
+    "profile": {
+      "keywords": [
+        { "keyword": "可降解", "weight": 2.0 },
+        { "keyword": "医用镁合金", "weight": 3.0 }
+      ],
+      "chat_queries": ["可降解骨钉相关的专利"],
+      "slots": { "tech_field": "医疗器械", "core_problem": "降解速率与骨愈合匹配" },
+      "viewed_patent_ids": []
+    }
+  },
+  {
+    "user_id": "u1010",
+    "remark": "智能制造总工：机器人+物联网跨领域",
+    "profile": {
+      "keywords": [
+        { "keyword": "工业机器人", "weight": 2.5 },
+        { "keyword": "设备状态监测", "weight": 2.0 }
+      ],
+      "chat_queries": ["工业机器人协同控制的专利", "5G 设备远程监测"],
+      "slots": { "tech_field": "工业机器人" },
+      "viewed_patent_ids": []
+    }
+  }
+]

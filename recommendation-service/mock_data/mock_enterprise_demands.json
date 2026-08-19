@@ -1,0 +1,62 @@
+[
+  {
+    "enterprise_id": "e2001",
+    "enterprise_name": "长风汽车制造有限公司",
+    "demand": {
+      "tech_field": "汽车检测",
+      "core_problem": "仪表板横梁零件检测精度不足，节拍偏长",
+      "keywords": ["仪表板 检测", "零件检测 检具"],
+      "constraints": { "legal_status": "授权" }
+    }
+  },
+  {
+    "enterprise_id": "e2002",
+    "enterprise_name": "远航新能源汽车股份有限公司",
+    "demand": {
+      "tech_field": "电池技术",
+      "core_problem": "动力电池包散热不均，快充工况温升过高",
+      "keywords": ["锂电池 热管理", "电池包 散热"],
+      "constraints": {}
+    }
+  },
+  {
+    "enterprise_id": "e2003",
+    "enterprise_name": "华南家电集团有限公司",
+    "demand": {
+      "tech_field": "涂层材料",
+      "core_problem": "产品外壳涂层耐高温性差且 VOC 超标",
+      "keywords": ["耐高温涂层", "环保 涂层"],
+      "constraints": {}
+    }
+  },
+  {
+    "enterprise_id": "e2004",
+    "enterprise_name": "光合绿能电力有限公司",
+    "demand": {
+      "tech_field": "光伏技术",
+      "core_problem": "现有组件转换效率瓶颈，需引入叠层电池技术",
+      "keywords": ["钙钛矿 叠层", "太阳能电池 封装"],
+      "constraints": {}
+    }
+  },
+  {
+    "enterprise_id": "e2005",
+    "enterprise_name": "康民骨科医院集团",
+    "demand": {
+      "tech_field": "医疗器械",
+      "core_problem": "骨折内固定需二次手术取出，寻求可降解方案",
+      "keywords": ["可降解 骨钉", "医用镁合金"],
+      "constraints": { "validity": "有效" }
+    }
+  },
+  {
+    "enterprise_id": "e2006",
+    "enterprise_name": "西部智慧农业开发有限公司",
+    "demand": {
+      "tech_field": "农业机器人",
+      "core_problem": "果园人工采摘成本高、果实损伤大",
+      "keywords": ["采摘机器人", "末端执行器"],
+      "constraints": {}
+    }
+  }
+]
