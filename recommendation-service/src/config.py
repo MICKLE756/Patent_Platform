@@ -14,6 +14,21 @@ load_dotenv(BASE_DIR / ".env", override=True)
 # 后端调用 /internal/v1/recommendations 时需携带 x-service-token 请求头
 SERVICE_TOKEN = os.getenv("SERVICE_TOKEN", "")
 
+# ==================== LLM 配置 (可选，OpenAI 兼容) ====================
+# 与 agent-service 约定一致：OPENAI_API_KEY / OPENAI_BASE_URL / MODEL_NAME。
+# 三者齐备时启用 LLM 润色触达文案；否则使用规则模板文案。
+LLM_API_KEY = os.getenv("OPENAI_API_KEY", "")
+LLM_BASE_URL = os.getenv("OPENAI_BASE_URL", "")
+LLM_MODEL_NAME = os.getenv("MODEL_NAME", "")
+LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "60"))
+
+# ==================== 消息推送 (可选) ====================
+# 配置后，触发点匹配产生的多方消息会 POST 到该 Webhook（如后端消息网关）；
+# 为空时消息仅随接口返回（delivery=returned），由调用方自行投递。
+PUSH_WEBHOOK_URL = os.getenv("PUSH_WEBHOOK_URL", "").rstrip("/")
+PUSH_WEBHOOK_TOKEN = os.getenv("PUSH_WEBHOOK_TOKEN", "")
+PUSH_TIMEOUT = float(os.getenv("PUSH_TIMEOUT", "10"))
+
 # ==================== 检索服务配置 (可选) ====================
 # 配置后，专利检索优先调用 retrieval-service；为空时回退到本地 milvus.json。
 RETRIEVAL_SERVICE_URL = os.getenv("RETRIEVAL_SERVICE_URL", "").rstrip("/")

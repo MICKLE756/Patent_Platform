@@ -1,0 +1,10 @@
+[
+  { "patent_id": "CN202610000002.2", "view_count": 320, "remark": "热点：汽车仪表板横梁检测检具" },
+  { "patent_id": "CN202610000003.3", "view_count": 510, "remark": "热点：锂电池热管理系统" },
+  { "patent_id": "CN202610000005.5", "view_count": 268, "remark": "热点：机器视觉缺陷检测" },
+  { "patent_id": "CN202610000007.7", "view_count": 445, "remark": "热点：钙钛矿叠层电池" },
+  { "patent_id": "CN202310000015.6", "view_count": 190, "remark": "热点：等离子喷涂耐磨涂层（老专利也可成热点）" },
+  { "patent_id": "CN202210000018.9", "view_count": 155, "remark": "热点：AI 医学影像病灶识别" },
+  { "patent_id": "CN202110000020.1", "view_count": 42, "remark": "非热点：低于默认阈值 100，不会推送" },
+  { "patent_id": "CN202210000017.8", "view_count": 15, "remark": "非热点：低于默认阈值 100，不会推送" }
+]

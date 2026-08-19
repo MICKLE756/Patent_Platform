@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 import config
 from proactive_service import ProactiveService
 from recommendation_service import RecommendationService
+from trigger_center import TRIGGER_POINTS, TriggerCenter
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,6 +37,7 @@ app = FastAPI(title="Patent Recommendation Service")
 
 _recommendation_service = RecommendationService()
 _proactive_service = ProactiveService()
+_trigger_center = TriggerCenter(proactive=_proactive_service)
 
 
 _STATIC_DIR = Path(__file__).parent / "static"
@@ -112,6 +114,15 @@ class PromoteRequest(BaseModel):
     top_k: int = Field(default=0, ge=0, le=config.MAX_TOP_K)
 
 
+class TriggerEvent(BaseModel):
+    trigger: str
+    payload: dict = Field(default_factory=dict)
+
+
+class TriggerDispatchRequest(BaseModel):
+    events: list[TriggerEvent] = Field(default_factory=list)
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
@@ -174,6 +185,23 @@ async def proactive_enterprise_demands(
         demands=[d.model_dump() for d in req.demands],
         top_k=req.top_k,
     )
+
+
+@app.get("/internal/v1/triggers")
+async def list_triggers(x_service_token: str | None = Header(default=None)):
+    """枚举静态触发点（后端据此在业务事件处接入 dispatch）。"""
+    _check_service_token(x_service_token)
+    return {"triggers": TRIGGER_POINTS}
+
+
+@app.post("/internal/v1/triggers/dispatch")
+async def dispatch_triggers(
+    req: TriggerDispatchRequest,
+    x_service_token: str | None = Header(default=None),
+):
+    """触发点分发：匹配 → 生成多方消息 → 推送（Webhook 可选）。"""
+    _check_service_token(x_service_token)
+    return _trigger_center.dispatch(events=[e.model_dump() for e in req.events])
 
 
 if __name__ == "__main__":

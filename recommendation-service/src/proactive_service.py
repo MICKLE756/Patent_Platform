@@ -22,6 +22,7 @@ from datetime import datetime
 from typing import Optional
 
 import config
+from llm_client import LLMClient
 from patent_search import PatentSearchService
 
 logger = logging.getLogger(__name__)
@@ -154,8 +155,22 @@ class InterestProfile:
 class ProactiveService:
     """三类主动触达：主动对话 / 热点推送 / 企业需求推广。"""
 
-    def __init__(self, search_service: PatentSearchService | None = None) -> None:
+    def __init__(
+        self,
+        search_service: PatentSearchService | None = None,
+        llm: LLMClient | None = None,
+    ) -> None:
         self.search_service = search_service or PatentSearchService()
+        self.llm = llm or LLMClient()
+
+    def _polish(self, template: str, scene: str, context: str) -> tuple[str, str]:
+        """用 LLM 润色触达文案；未启用/失败时回退模板。返回 (文案, 来源)。"""
+        polished = self.llm.polish(
+            f"触达场景：{scene}\n背景信息：{context}\n参考模板：{template}"
+        )
+        if polished:
+            return polished, "llm"
+        return template, "template"
 
     # ==================== 1. 主动发起对话 ====================
 
@@ -187,10 +202,20 @@ class ProactiveService:
             matched = self._match_patents(profile, candidates, top_k)
             if not matched:
                 continue
+            template = self._opening_message(profile, matched)
+            message, source = self._polish(
+                template,
+                scene="平台新出现用户可能感兴趣的专利，AI 助手主动发起对话的开场白",
+                context=(
+                    f"用户最近对话：{profile.chat_queries[0] if profile.chat_queries else '无'}；"
+                    f"命中专利：{'、'.join(p.get('title', '') for p in matched[:3])}"
+                ),
+            )
             conversations.append({
                 "user_id": user_id,
                 "trigger": TRIGGER_NEW_PATENT,
-                "opening_message": self._opening_message(profile, matched),
+                "opening_message": message,
+                "message_source": source,
                 "patents": matched,
             })
 
@@ -291,9 +316,24 @@ class ProactiveService:
                 if len(items) >= top_k:
                     break
             if items:
+                first = items[0]
+                template = (
+                    f"为您推送 {len(items)} 条热点/新收录专利，"
+                    f"例如《{first.get('title', '')}》（{first.get('reason', '')}）。"
+                )
+                message, source = self._polish(
+                    template,
+                    scene="向兴趣相关用户推送热点/新收录专利的推送语",
+                    context=(
+                        f"推送条数：{len(items)}；首条：《{first.get('title', '')}》，"
+                        f"理由：{first.get('reason', '')}"
+                    ),
+                )
                 pushes.append({
                     "user_id": user_id,
                     "trigger": TRIGGER_HOT_PATENT,
+                    "push_message": message,
+                    "message_source": source,
                     "items": items,
                 })
 
@@ -365,6 +405,20 @@ class ProactiveService:
 
             for owner, cards in by_owner.items():
                 first = cards[0]
+                template = (
+                    f"您好！企业{('「' + enterprise_name + '」') if enterprise_name else ''}"
+                    f"正在寻找「{demand_text}」相关技术，您名下的专利"
+                    f"《{first.get('title', '')}》等 {len(cards)} 件专利与该需求高度匹配，"
+                    f"建议主动对接推广，促成技术转化。"
+                )
+                message, source = self._polish(
+                    template,
+                    scene="向专利权人推广企业技术需求的触达信",
+                    context=(
+                        f"企业：{enterprise_name or enterprise_id}；需求：{demand_text}；"
+                        f"专利权人：{owner}；专利：《{first.get('title', '')}》等 {len(cards)} 件"
+                    ),
+                )
                 promotions.append({
                     "owner": owner,
                     "enterprise_id": enterprise_id,
@@ -372,12 +426,8 @@ class ProactiveService:
                     "trigger": TRIGGER_ENTERPRISE_DEMAND,
                     "demand_summary": demand_text,
                     "patents": cards,
-                    "message": (
-                        f"您好！企业{('「' + enterprise_name + '」') if enterprise_name else ''}"
-                        f"正在寻找「{demand_text}」相关技术，您名下的专利"
-                        f"《{first.get('title', '')}》等 {len(cards)} 件专利与该需求高度匹配，"
-                        f"建议主动对接推广，促成技术转化。"
-                    ),
+                    "message": message,
+                    "message_source": source,
                 })
 
         if not promotions:
