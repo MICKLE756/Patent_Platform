@@ -13,6 +13,18 @@
 3. **企业需求推广**：对企业提出的技术需求检索匹配的专利，按专利权人聚合，
    生成向专利权人主动推广的触达文案，促成技术转化。
 
+在此之上还接入了 **agent（LLM）文案生成** 与 **静态触发点 → 多方消息 → 推送**
+能力（`llm_client.py` / `trigger_center.py`）：
+
+- **LLM 文案（可选）**：配置 `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `MODEL_NAME`
+  （与 agent-service 约定一致，OpenAI 兼容接口）后，三类触达文案由 LLM 基于
+  给定专利/需求信息润色生成；未配置或调用失败时**自动回退规则模板**，服务
+  功能不受影响。触达结果带 `message_source`（`llm` / `template`）标记来源。
+- **静态触发点**：注册三个业务事件触发点（新专利收录 / 浏览量激增 /
+  企业需求发布），后端在事件发生时调用统一分发接口，本服务完成匹配并
+  生成**多方消息**（用户 / 专利权人 / 企业，多方共享 `thread_id` 便于拉进
+  同一对接会话），可选通过 Webhook 推送到后端消息网关。
+
 ## 架构定位
 
 ```
@@ -159,6 +171,67 @@ retrieval-service /retrieve/search（失败回退本地 milvus.json）
 响应：`promotions` 每条为「一位专利权人 × 一条企业需求」，含其名下命中专利与
 推广文案（`您名下的专利《…》等 N 件专利与该需求高度匹配，建议主动对接推广`）。
 
+### `GET /internal/v1/triggers`
+
+枚举静态触发点（后端据此在业务事件处接入 dispatch）：
+
+```json
+{
+  "triggers": {
+    "new_patent_published":      { "description": "平台新收录专利，匹配兴趣用户后由 AI 主动发起对话", "parties": ["user"], "channel": "ai_chat" },
+    "patent_view_surge":         { "description": "专利浏览量达到热点阈值，向兴趣相关用户推送", "parties": ["user"], "channel": "notification" },
+    "enterprise_demand_created": { "description": "企业发布技术需求，向匹配的专利权人推广并回执企业", "parties": ["patent_owner", "enterprise"], "channel": "notification" }
+  }
+}
+```
+
+### `POST /internal/v1/triggers/dispatch`
+
+触发点统一分发：匹配 → 生成多方消息 → 推送（Webhook 可选）。
+`payload` 结构与对应 proactive 接口的请求体一致：
+
+```json
+{
+  "events": [
+    { "trigger": "new_patent_published",      "payload": { "users": [], "new_patents": [], "top_k": 3 } },
+    { "trigger": "patent_view_surge",         "payload": { "users": [], "patent_stats": [], "top_k": 5 } },
+    { "trigger": "enterprise_demand_created", "payload": { "demands": [], "top_k": 5 } }
+  ]
+}
+```
+
+响应：
+
+```json
+{
+  "results": [{ "trigger": "enterprise_demand_created", "status": "matched", "message_count": 3 }],
+  "messages": [
+    {
+      "message_id": "…", "trigger": "enterprise_demand_created", "thread_id": "…",
+      "recipient_type": "patent_owner", "recipient_id": "胡拥军", "recipient_name": "胡拥军",
+      "channel": "notification", "title": "企业技术需求与您的专利匹配",
+      "content": "您好！企业「…」正在寻找…", "patents": [ … ]
+    },
+    {
+      "message_id": "…", "trigger": "enterprise_demand_created", "thread_id": "同上",
+      "recipient_type": "enterprise", "recipient_id": "e100", "recipient_name": "长风汽车制造有限公司",
+      "channel": "notification", "title": "您的技术需求已匹配到专利权人",
+      "content": "您发布的需求「…」已匹配到 N 位专利权人…", "patents": [ … ]
+    }
+  ],
+  "delivery": { "mode": "returned", "pushed": 0, "failed": 0 }
+}
+```
+
+多方沟通约定：同一事件产生的消息共享 `thread_id`（如企业需求下的
+权利人推广消息与企业回执），后端可据此把相关方拉进同一对接会话。
+
+推送模式（`delivery.mode`）：
+
+- `returned`：未配置 `PUSH_WEBHOOK_URL`，消息仅随响应返回，由调用方投递；
+- `pushed` / `partial` / `failed`：配置 Webhook 后逐条 POST 的结果；投递失败
+  不丢消息（仍在 `messages` 中），调用方可重试。
+
 ### `GET /health`
 
 存活探针，返回 `{"status": "ok"}`。
@@ -176,13 +249,21 @@ retrieval-service /retrieve/search（失败回退本地 milvus.json）
 ```bash
 cd recommendation-service
 pip install -r requirements.txt
+cp .env.example .env         # 按需填入 OPENAI_API_KEY / OPENAI_BASE_URL / MODEL_NAME 等
 python src/app.py            # 默认 0.0.0.0:8090
 ```
 
-环境变量（可放 `.env`）：
+环境变量（模板见 `.env.example`，复制为 `.env` 后填写；`.env` 不入库）：
 
 | 变量 | 说明 | 默认 |
 |---|---|---|
+| `OPENAI_API_KEY` | LLM API Key（OpenAI 兼容），空则关闭 LLM 用模板文案 | 空 |
+| `OPENAI_BASE_URL` | LLM API base_url（如 `https://api.deepseek.com/v1`） | 空 |
+| `MODEL_NAME` | LLM 模型名 | 空 |
+| `LLM_TIMEOUT` | LLM 调用超时（秒） | 60 |
+| `PUSH_WEBHOOK_URL` | 消息推送 Webhook（后端消息网关），空则消息仅随响应返回 | 空 |
+| `PUSH_WEBHOOK_TOKEN` | 推送鉴权令牌（`x-service-token` 请求头） | 空 |
+| `PUSH_TIMEOUT` | 推送超时（秒） | 10 |
 | `SERVICE_TOKEN` | 内部服务令牌，空则跳过鉴权（本地开发） | 空 |
 | `RETRIEVAL_SERVICE_URL` | retrieval-service 地址，空则用本地 milvus.json | 空 |
 | `RETRIEVAL_SERVICE_TIMEOUT` | retrieval 调用超时（秒） | 30 |
@@ -201,9 +282,12 @@ python src/app.py            # 默认 0.0.0.0:8090
 
 ```bash
 cd recommendation-service/src
-python -m pytest test_recommendation_service.py test_proactive_service.py -v
+python -m pytest -v
 ```
 
 覆盖：空画像、纯关键词、纯聊天、混合、检索全空、检索故障降级、
 top_k 边界、已浏览专利排除、端点鉴权；主动触达三类场景（主动对话 /
-热点推送 / 企业需求推广）的命中、排除、降级与鉴权。
+热点推送 / 企业需求推广）的命中、排除、降级与鉴权；LLM 启用条件、
+成功润色、失败/超时/响应异常静默回退模板、`message_source` 标记；
+静态触发点分发、多方消息与 `thread_id` 共享、Webhook 推送成功 /
+部分失败 / 全部失败不丢消息、未知触发点、触发端点鉴权。
