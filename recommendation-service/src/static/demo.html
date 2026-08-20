@@ -141,6 +141,7 @@ const SCENES = {
       return data.pushes.map(p => `
         <div class="push-card">
           <div class="who">推送给用户 <b>${esc(p.user_id)}</b></div>
+          ${p.push_message ? `<div class="bubble">🔔 ${esc(p.push_message)}</div>` : ""}
           ${(p.items || []).map(it => patentCard(it, it.push_type)).join("")}
         </div>`).join("");
     }

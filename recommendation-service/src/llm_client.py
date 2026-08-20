@@ -48,10 +48,14 @@ class LLMClient:
         self.base_url = (base_url or config.LLM_BASE_URL).rstrip("/")
         self.model = model or config.LLM_MODEL_NAME
         self.timeout = timeout or config.LLM_TIMEOUT
+        # 鉴权失败（401/403）后熔断：后续请求直接回退模板，避免每条消息都白跑一次失败调用
+        self._auth_failed = False
 
     @property
     def enabled(self) -> bool:
-        return bool(self.api_key and self.base_url and self.model)
+        return bool(
+            self.api_key and self.base_url and self.model and not self._auth_failed
+        )
 
     def polish(self, prompt: str) -> str | None:
         """按触达场景生成/润色文案；未启用或失败时返回 None（回退模板）。"""
@@ -75,6 +79,17 @@ class LLMClient:
             text = resp.json()["choices"][0]["message"]["content"]
             text = (text or "").strip().strip('"').strip()
             return text or None
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code in (401, 403):
+                self._auth_failed = True
+                logger.error(
+                    "[LLM] 鉴权失败（HTTP %s），本进程内停用 LLM 润色，"
+                    "请检查 OPENAI_API_KEY / OPENAI_BASE_URL / MODEL_NAME",
+                    e.response.status_code,
+                )
+            else:
+                logger.warning("[LLM] 文案生成失败，回退模板: %s", e)
+            return None
         except Exception as e:
             logger.warning("[LLM] 文案生成失败，回退模板: %s", e)
             return None
