@@ -157,7 +157,14 @@ class PatentSearchService:
             "final_score": item.get("final_score", 0.0),
             "detail": detail,
         }
-        for key in ("abstract", "applicant", "application_scene", "maturity"):
+        for key in (
+            "abstract",
+            "applicant",
+            "application_scene",
+            "maturity",
+            "legal_status",
+            "validity",
+        ):
             if key in detail and key not in normalized:
                 normalized[key] = detail[key]
         return normalized

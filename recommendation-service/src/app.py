@@ -128,8 +128,10 @@ async def health():
     return {"status": "ok"}
 
 
+# 下列接口内部有同步阻塞 I/O（LLM 润色 / retrieval 调用 / Webhook 推送），
+# 声明为同步函数由 FastAPI 放到线程池执行，避免阻塞事件循环。
 @app.post("/internal/v1/recommendations")
-async def recommendations(
+def recommendations(
     req: RecommendRequest,
     x_service_token: str | None = Header(default=None),
 ):
@@ -147,7 +149,7 @@ async def recommendations(
 
 
 @app.post("/internal/v1/proactive/conversations")
-async def proactive_conversations(
+def proactive_conversations(
     req: ProactiveConversationRequest,
     x_service_token: str | None = Header(default=None),
 ):
@@ -161,7 +163,7 @@ async def proactive_conversations(
 
 
 @app.post("/internal/v1/proactive/hot-patents")
-async def proactive_hot_patents(
+def proactive_hot_patents(
     req: HotPushRequest,
     x_service_token: str | None = Header(default=None),
 ):
@@ -175,7 +177,7 @@ async def proactive_hot_patents(
 
 
 @app.post("/internal/v1/proactive/enterprise-demands")
-async def proactive_enterprise_demands(
+def proactive_enterprise_demands(
     req: PromoteRequest,
     x_service_token: str | None = Header(default=None),
 ):
@@ -195,7 +197,7 @@ async def list_triggers(x_service_token: str | None = Header(default=None)):
 
 
 @app.post("/internal/v1/triggers/dispatch")
-async def dispatch_triggers(
+def dispatch_triggers(
     req: TriggerDispatchRequest,
     x_service_token: str | None = Header(default=None),
 ):
