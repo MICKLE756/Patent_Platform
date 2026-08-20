@@ -250,8 +250,15 @@ retrieval-service /retrieve/search（失败回退本地 milvus.json）
 cd recommendation-service
 pip install -r requirements.txt
 cp .env.example .env         # 按需填入 OPENAI_API_KEY / OPENAI_BASE_URL / MODEL_NAME 等
-python src/app.py            # 默认 0.0.0.0:8090
+python app.py                # 推荐：默认 0.0.0.0:8090
+# 或 python src/app.py       # 直接运行 FastAPI 源文件
 ```
+
+不要把 `src/app.py` 单独复制到其他目录运行。它依赖同目录的
+`config.py`、`proactive_service.py`、`recommendation_service.py`、
+`patent_search.py` 和 `trigger_center.py`；只复制一个文件会出现
+`ModuleNotFoundError: No module named 'config'`。推荐从
+`recommendation-service` 目录运行上面的 `app.py` 启动器。
 
 环境变量（模板见 `.env.example`，复制为 `.env` 后填写；`.env` 不入库）：
 
